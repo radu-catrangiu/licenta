@@ -1,8 +1,28 @@
-import Vue from 'vue'
-import App from './App.vue'
+import Vue from "vue";
+import App from "./App.vue";
+import VueGeolocation from "vue-browser-geolocation";
+import VueRouter from "vue-router";
 
-Vue.config.productionTip = false
+Vue.use(VueGeolocation);
+Vue.use(VueRouter);
+
+Vue.config.productionTip = false;
+
+import Login from "./components/Login.vue";
+import Home from "./components/Home.vue";
+
+const routes = [
+  { path: "/", name: "Acasa", component: Home },
+  { path: "/login", name: "Login", component: Login }
+];
+
+const router = new VueRouter({ routes, mode: 'history'});
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  router,
+  render: h => h(App)
+}).$mount("#app");
+
+import { config } from './config';
+
+Vue.prototype.appConfig = config
