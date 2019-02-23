@@ -1,0 +1,30 @@
+version: "3.1"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    container_name: database
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    command: --smallfiles
+    volumes:
+      # - db_persistence:/data/db
+      - ./database/config/:/init
+      - ./database/init/:/docker-entrypoint-initdb.d
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    container_name: database-interface
+    ports:
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+volumes:
+  db_persistence:
