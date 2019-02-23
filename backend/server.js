@@ -3,8 +3,9 @@ const cors = require('cors');
 const body_parser = require('body-parser');
 const async = require('async');
 const tv4 = require('tv4');
+const http = require('http');
 
-const jsonrpc = {
+const jsonrpc_standard = {
     type: "object",
     properties: {
         id: {
@@ -27,7 +28,7 @@ app.use(body_parser.json());
 
 // Middleware to check if the JSONRPC standard is respected
 app.use(function(req, res, next) {
-    let valid = tv4.validate(req.body, jsonrpc);
+    let valid = tv4.validate(req.body, jsonrpc_standard);
     
     if (!valid) {
         return send_error({
@@ -39,29 +40,33 @@ app.use(function(req, res, next) {
     return next();
 });
 
-app.options('*', cors());
 const cors_options = {
     origin: function(origin, callback) {
         console.log("Origin: ", origin);
         callback(null, true);
     }
 };
+app.options('*', cors(cors_options));
 
 /**
  * Initialize API server
  * @param {Number} port
- * @param {{services: Object}} rpc_config
+ * @param {{services: Object}} server_config
  * @param {Object} modules
  * @param {Function} callback
  */
-function init(port, rpc_config, modules, callback) {
-    const services = rpc_config.services;
-    const service_names = Object.keys(rpc_config.services);
+function init(port, server_config, modules, callback) {
+    const services = server_config.services;
+    const service_names = Object.keys(server_config.services);
 
     // TODO: Middleware to check if authentication is needed
     app.use(function(req, res, next) {
         console.debug(req.path);
-        return next();
+        if (services[req.path].use_auth) {
+            // TODO: Make call to tokens service to verify req.body.params.user_token
+        } else {
+            return next();
+        }
     });
 
     async.each(
@@ -99,7 +104,8 @@ function init(port, rpc_config, modules, callback) {
             if (error) {
                 return callback(error);
             } else {
-                return app.listen(port, callback);
+                const httpServer = http.createServer(app);
+                return httpServer.listen(port, callback);
             }
         }
     );
