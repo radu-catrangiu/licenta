@@ -1,15 +1,33 @@
-const express = require('express');
-const bodyparser = require('body-parser');
+const config = require('./config');
+const server = require('./server');
 
-const app = express();
+// if (process.env.debug) {
+//     console.debug = console.log;
+// } else {
+//     console.debug = () => {};
+// }
 
-app.use(bodyparser.json());
+const rpc_config = {
+    services: {
+        '/account': {
+            handler: {
+                create: (env, params, done) => {
+                    console.debug(env);
+                    console.debug(params);
+                    done(null, "OK");
+                }
+            },
+            useAuth: false
+        }
+    }
+};
 
-app.post('/', (request, response) => {
-    console.log(request.body);
-    response.send('Hello World!');
-});
+server.init(config.port, rpc_config, {}, (error) => {
+    if (error) {
+        console.debug(error);
+        process.exit(1);
+    }
 
-app.listen(8080, () => {
-    console.log("Server started on port 8080");
+    console.log('Server started on port ' + config.port);
+    console.log('http://localhost:' + config.port + '/');
 });
