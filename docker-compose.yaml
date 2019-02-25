@@ -3,14 +3,18 @@ version: "3.1"
 services:
   mongo:
     image: mongo
+    command: --smallfiles
     restart: always
     container_name: database
+    ports:
+      - 27017:27017
+    networks: 
+      - net
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    command: --smallfiles
     volumes:
-      # - db_persistence:/data/db
+      - db_persistence:/data/db
       - ./database/config/:/init
       - ./database/init/:/docker-entrypoint-initdb.d
 
@@ -18,6 +22,8 @@ services:
     image: mongo-express
     restart: always
     container_name: database-interface
+    networks: 
+      - net
     ports:
       - 8081:8081
     depends_on:
@@ -28,3 +34,7 @@ services:
 
 volumes:
   db_persistence:
+
+networks: 
+  net:
+  
