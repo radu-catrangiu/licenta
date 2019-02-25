@@ -1,5 +1,5 @@
 const app = require('express')();
-const cors = require('cors');
+// const cors = require('cors');
 const body_parser = require('body-parser');
 const async = require('async');
 const tv4 = require('tv4');
@@ -40,13 +40,13 @@ app.use(function(req, res, next) {
     return next();
 });
 
-const cors_options = {
-    origin: function(origin, callback) {
-        console.log("Origin: ", origin);
-        callback(null, true);
-    }
-};
-app.options('*', cors(cors_options));
+// const cors_options = {
+//     origin: function(origin, callback) {
+//         console.log("Origin: ", origin);
+//         callback(null, true);
+//     }
+// };
+// app.options('*', cors(cors_options));
 
 /**
  * Initialize API server
@@ -58,6 +58,14 @@ app.options('*', cors(cors_options));
 function init(port, server_config, modules, callback) {
     const services = server_config.services;
     const service_names = Object.keys(server_config.services);
+
+    app.use(function(req, res, next) {
+        if (service_names.includes(req.path)) {
+            return next();
+        } else {
+            return res.sendStatus(404);
+        }
+    });
 
     // TODO: Middleware to check if authentication is needed
     app.use(function(req, res, next) {
@@ -75,7 +83,7 @@ function init(port, server_config, modules, callback) {
             const env = modules;
             const handler = services[service_name].handler;
 
-            app.post(service_name, cors(cors_options), (request, response) => {
+            app.post(service_name, /*cors(cors_options),*/ (request, response) => {
                 const method = request.body.method;
                 const params = request.body.params;
                 const service_handler = handler[method];

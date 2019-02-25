@@ -1,15 +1,9 @@
-const config = require('./config');
 const server = require('./server');
-
-// if (process.env.debug) {
-//     console.debug = console.log;
-// } else {
-//     console.debug = () => {};
-// }
+const config = require('./config');
 
 const rpc_config = {
     services: {
-        '/account': {
+        '/core/users': {
             handler: {
                 create: (env, params, done) => {
                     console.debug(env);
@@ -17,7 +11,7 @@ const rpc_config = {
                     done(null, "OK");
                 }
             },
-            useAuth: false
+            use_auth: false
         }
     }
 };
