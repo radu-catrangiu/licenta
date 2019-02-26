@@ -10,7 +10,7 @@ exports.add = (env, params, done) => {
         if (err) {
             return done(err);
         }
-        console.debug(res);
+        // console.debug(res);
         done(null, "OK");
     });
 }

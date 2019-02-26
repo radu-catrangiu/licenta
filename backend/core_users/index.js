@@ -5,6 +5,7 @@ const modules = require('./src/modules');
 const async = require('async');
 
 const rpc_config = {
+    name: "core_users",
     services: {
         '/core/users': {
             handler: handler,
@@ -13,18 +14,21 @@ const rpc_config = {
     }
 };
 
-async.waterfall([
-    modules.load_modules,
-    function(modules, done) {
-        server.init(config.port, rpc_config, modules, error => {
-            if (error) {
-                console.debug(error);
-                process.exit(1);
-            }
+async.waterfall(
+    [
+        modules.load_modules,
+        function(modules, done) {
+            server.init(config.port, rpc_config, modules, error => {
+                if (error) {
+                    console.debug(error);
+                    process.exit(1);
+                }
 
-            console.log('Server started on port ' + config.port);
-            console.log('http://localhost:' + config.port + '/');
-            done();
-        });
-    }
-], (err, res) => console.log(err, res));
+                console.log('Server started on port ' + config.port);
+                console.log('http://localhost:' + config.port + '/');
+                done();
+            });
+        }
+    ],
+    (err, res) => console.log(err, res)
+);

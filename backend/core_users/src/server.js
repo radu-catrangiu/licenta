@@ -28,6 +28,7 @@ app.use(body_parser.json());
 
 // Middleware to check if the JSONRPC standard is respected
 app.use(function(req, res, next) {
+    console.debug('JSONRPC Standard Check: ' + req.body)
     let valid = tv4.validate(req.body, jsonrpc_standard);
     
     if (!valid) {
@@ -51,7 +52,7 @@ app.use(function(req, res, next) {
 /**
  * Initialize API server
  * @param {Number} port
- * @param {{services: Object}} server_config
+ * @param {{name: String, services: Object}} server_config
  * @param {Object} modules
  * @param {Function} callback
  */
@@ -113,7 +114,13 @@ function init(port, server_config, modules, callback) {
                 return callback(error);
             } else {
                 const httpServer = http.createServer(app);
-                return httpServer.listen(port, callback);
+                httpServer.listen(port, callback);
+
+                setInterval(() => {
+                    service_names.forEach(service => {
+                        announcer(server_config.name, port, service);
+                    })
+                }, 10000);
             }
         }
     );
@@ -161,6 +168,22 @@ function send_error(data, request, response) {
     }
 
     return response.send(jsonrpc);
+}
+
+function announcer(name, port, service) {
+    var dgram = require('dgram');
+    var client = dgram.createSocket('udp4');
+
+    var message = { name, port, service };
+
+    const payload = Buffer.from(JSON.stringify(message));
+    client.send(payload, 8089, err => {
+        if (!err) {
+            console.debug("Announcer Broadcast: ", message);
+        } else {
+            console.debug(err);
+        }
+    });
 }
 
 module.exports = {

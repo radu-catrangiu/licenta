@@ -1,8 +1,8 @@
 module.exports = {
     mongo: {
-        url: 'localhost',
-        user: 'root',
-        password: 'example',
+        url: process.env.MONGO_HOST || 'localhost',
+        user: process.env.MONGO_USER || 'root',
+        password: process.env.MONGO_PASS || 'example',
         db: 'core',
         collections: {
             tokens: 'tokens',
