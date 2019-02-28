@@ -9,7 +9,9 @@ services:
     ports:
       - 27017:27017
     networks: 
-      - net
+      net:
+        aliases:
+          - database
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -25,12 +27,28 @@ services:
     networks: 
       - net
     ports:
-      - 8081:8081
+      - 9001:8081
     depends_on:
       - mongo
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  
+  core-users:
+    build:
+      context: ./backend/core_users/
+      dockerfile: Dockerfile
+    container_name: core-users
+    networks: 
+      - net
+    ports:
+      - 3333:8080
+    depends_on:
+      - mongo
+    environment:
+      MONGO_HOST: database
+      MONGO_USER: root
+      MONGO_PASS: example
 
 volumes:
   db_persistence:
