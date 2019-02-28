@@ -14,3 +14,6 @@ This is the nicest:
 https://coolors.co/272727-fed766-009fb7-696773-eff1f3
 
 https://vectr.com/raduu18/
+
+## portainer 
+docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
