@@ -33,6 +33,16 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  broker:
+    image: eclipse-mosquitto:latest
+    container_name: announce-broker
+    ports:
+      - 1883:1883
+    networks:
+      net:
+        aliases:
+          - broker
   
   core-users:
     build:
@@ -45,10 +55,19 @@ services:
       - 3333:8080
     depends_on:
       - mongo
+      - broker
     environment:
       MONGO_HOST: database
       MONGO_USER: root
       MONGO_PASS: example
+
+  test:
+    build:
+      context: ./backend/test/
+      dockerfile: Dockerfile
+    container_name: test
+    networks: 
+      - net
 
 volumes:
   db_persistence:
