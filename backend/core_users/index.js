@@ -1,5 +1,5 @@
 const handler = require('./src/handler');
-const server = require('./src/server');
+const server = require('core_server_module');
 const config = require('./config');
 const modules = require('./src/modules');
 const async = require('async');
