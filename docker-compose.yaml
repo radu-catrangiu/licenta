@@ -60,6 +60,8 @@ services:
       MONGO_HOST: database
       MONGO_USER: root
       MONGO_PASS: example
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
 
   test:
     build:
@@ -68,6 +70,19 @@ services:
     container_name: test
     networks: 
       - net
+
+  insider:
+    build:
+      context: ./backend/insider
+      dockerfile: Dockerfile
+    container_name: insider
+    networks:
+      - net
+    depends_on:
+      - broker
+    environment:
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
 
 volumes:
   db_persistence:
