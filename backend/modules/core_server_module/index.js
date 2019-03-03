@@ -92,12 +92,9 @@ function init(port, server_config, modules, callback) {
             } else {
                 const httpServer = http.createServer(app);
                 httpServer.listen(port, callback);
-
-                setInterval(() => {
-                    service_names.forEach(service => {
-                        announcer.init(server_config.name, port, service);
-                    });
-                }, 10000);
+                service_names.forEach(service => {
+                    announcer.init(server_config.name, port, service);
+                });
             }
         }
     );
