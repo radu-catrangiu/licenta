@@ -6,6 +6,9 @@ const http = require('http');
 const jsonrpc_standard = require('./schema');
 const announcer = require('./announcer');
 const { send_result, send_error } = require('./utils');
+const supported_modules = {
+    mongo: require('./modules/mongo')
+};
 
 app.use(body_parser.json());
 
@@ -26,14 +29,58 @@ app.use(function(req, res, next) {
     return next();
 });
 
+const instance = {};
+const private_instance = {
+    modules: {}
+}
+
+/**
+ * Use default module. Any unsupported default_module will be ignored. 
+ * @param default_module The name of the module
+ * @param config Config for init
+ */
+instance.use = function(default_module, config) {
+    if (supported_modules[default_module]) {
+        private_instance.modules[default_module] = config;
+    }
+    return instance;
+};
+
 /**
  * Initialize API server
  * @param {Number} port
  * @param {{name: String, services: Object}} server_config
- * @param {Object} modules
+ * @param {Object} modules External modules to have in env
  * @param {Function} callback
  */
-function init(port, server_config, modules, callback) {
+instance.init = function(port, server_config, modules, callback) {
+    async.waterfall([
+        function init_mongo(next) {
+            const config = private_instance.modules['mongo'];
+            if (!config) {
+                return next();
+            }
+            
+            supported_modules['mongo'].init(config, (err, res) => {
+                if (err) {
+                    return next(err);
+                }
+                const default_modules = {};
+                Object.assign(default_modules, res);
+                return next(null, default_modules);
+            });
+        }
+    ], (err, default_modules = {}) => {
+        if (err) {
+            return callback(err);
+        }
+
+        Object.assign(modules, default_modules);
+        return init_handlers(port, server_config, modules, callback);
+    });
+}
+
+function init_handlers(port, server_config, modules, callback) {
     const services = server_config.services;
     const service_names = Object.keys(server_config.services);
 
@@ -49,7 +96,9 @@ function init(port, server_config, modules, callback) {
     app.use(function(req, res, next) {
         console.debug(req.path);
         if (services[req.path].use_auth) {
-            // TODO: Make call to tokens service to verify req.body.params.user_token
+            // TODO: Make call to tokens service to verify 
+            // req.body.params.user_token
+            return next();
         } else {
             return next();
         }
@@ -100,6 +149,4 @@ function init(port, server_config, modules, callback) {
     );
 }
 
-module.exports = {
-    init
-};
+module.exports = instance;
