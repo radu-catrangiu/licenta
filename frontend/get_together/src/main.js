@@ -9,10 +9,11 @@ Vue.use(VueRouter);
 Vue.config.productionTip = false;
 
 import Login from "./components/Login.vue";
-import Home from "./components/Home.vue";
+// import Home from "./components/Home.vue";
+import GMap from "./components/GMap.vue";
 
 const routes = [
-  { path: "/", name: "Acasa", component: Home },
+  { path: "/", name: "Acasa", component: GMap },
   { path: "/login", name: "Login", component: Login }
 ];
 
