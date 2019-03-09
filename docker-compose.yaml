@@ -51,8 +51,6 @@ services:
     container_name: core-users
     networks: 
       - net
-    ports:
-      - 3333:8080
     depends_on:
       - mongo
       - broker
@@ -73,11 +71,13 @@ services:
 
   insider:
     build:
-      context: ./backend/insider
+      context: ./backend/insider/
       dockerfile: Dockerfile
     container_name: insider
     networks:
       - net
+    ports:
+      - 3333:8089
     depends_on:
       - broker
     environment:
