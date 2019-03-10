@@ -1,25 +1,15 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo5.svg" height="50px">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <hr>
-
-    <router-link to="/">Home</router-link>
-    <br>
-    <router-link to="/login">Login</router-link>
-
-    <hr>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
   name: "app",
   components: {
-    HelloWorld
+    
   }
 };
 </script>
@@ -33,7 +23,7 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
   margin-top: 20px;
 }
