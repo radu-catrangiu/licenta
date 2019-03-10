@@ -82,7 +82,7 @@ services:
       - broker
     environment:
       MQTT_BROKER: mqtt://broker/
-      ANNOUNCE_INTERVAL: 5000
+      ANNOUNCE_INTERVAL: 300000
 
 volumes:
   db_persistence:
