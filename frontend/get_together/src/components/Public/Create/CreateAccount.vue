@@ -9,6 +9,7 @@ export default {
     }
   },
   mounted() {
+    document.title = "Create Account | Get Together";
     console.log(this.appConfig);
   }
 };

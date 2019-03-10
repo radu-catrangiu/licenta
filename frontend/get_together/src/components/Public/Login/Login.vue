@@ -9,6 +9,7 @@ export default {
     }
   },
   mounted() {
+    document.title = "Log In | Get Together";
     console.log(this.appConfig);
   }
 };
