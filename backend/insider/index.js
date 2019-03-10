@@ -10,7 +10,7 @@ const app = express();
 const services = {};
 
 function add_service(name, address, path) {
-    const INTERVAL = process.env.ANNOUNCE_INTERVAL || 5000;
+    const INTERVAL = process.env.ANNOUNCE_INTERVAL || 300000;
     const service = { name, address, path };
 
     if (services[path]) {
@@ -40,7 +40,7 @@ udp_server.on('message', function(message, rinfo) {
 mqtt_client.on('connect', function() {
     mqtt_client.subscribe('announce', function(err) {
         if (err) {
-            console.error("Unable to subscribe to `announce`");
+            console.error('Unable to subscribe to `announce`');
         }
     });
 });
@@ -66,7 +66,17 @@ app.use('*', function(req, res) {
     if (services[req.baseUrl]) {
         const url = services[req.baseUrl].address;
         const path = services[req.baseUrl].path;
-        req.pipe(request(url + path)).pipe(res);
+        const pipe = req.pipe(request(url + path));
+
+        pipe.on('error', err => {
+            console.error(req.baseUrl, ' : ', err.message);
+            clearTimeout(services[req.baseUrl].expiry);
+            delete services[req.baseUrl];
+            res.sendStatus(404);
+        });
+        pipe.on('response', () => {
+            pipe.pipe(res);
+        });
     } else {
         res.sendStatus(404);
     }
