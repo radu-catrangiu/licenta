@@ -3,9 +3,22 @@
 <script>
 /* eslint-disable */
 export default {
+  data() {
+    return {
+      username: "",
+      password: "",
+      rememberMe: false
+    }
+  },
   methods: {
-    login() {
-      this.$router.push("/");
+    create() {
+      this.$router.push({
+        name: "Create Account", 
+        params: { 
+          username: this.username,
+          password: this.password
+        }
+      });
     }
   },
   mounted() {

@@ -20,13 +20,15 @@
                 id="inputUsername"
                 class="form-control"
                 placeholder="Username"
+                ref="username"
                 required
                 autofocus
+                v-model.trim="username"
             />
             <label for="inputUsername">Username</label>
         </div>
 
-        <div class="form-label-group">
+        <!-- <div class="form-label-group">
             <input
                 type="firstname"
                 id="inputFirstname"
@@ -34,6 +36,7 @@
                 placeholder="Firstname"
                 required
                 autofocus
+                v-model.trim="firstname"
             />
             <label for="inputFirstname">Firstname</label>
         </div>
@@ -46,8 +49,23 @@
                 placeholder="Lastname"
                 required
                 autofocus
+                v-model.trim="lastname"
             />
             <label for="inputLastname">Lastname</label>
+        </div> -->
+
+        <div class="form-label-group">
+            <input
+                type="email"
+                id="inputEmail"
+                class="form-control"
+                placeholder="Email"
+                ref="email"
+                required
+                autofocus
+                v-model.trim="email"
+            />
+            <label for="inputEmail">Email</label>
         </div>
 
         <div class="form-label-group">
@@ -56,7 +74,9 @@
                 id="inputPassword"
                 class="form-control"
                 placeholder="Password"
+                ref="password1"
                 required
+                v-model.trim="password1"
             />
             <label for="inputPassword">Password</label>
         </div>
@@ -67,14 +87,21 @@
                 id="inputRepeatPassword"
                 class="form-control"
                 placeholder="RepeatPassword"
+                ref="password2"
                 required
+                v-model.trim="password2"
             />
             <label for="inputRepeatPassword">Repeat Password</label>
         </div>
 
         <div class="checkbox mb-3">
             <label>
-                <input type="checkbox" value="agree-terms" required/> Agree with the Terms and Conditions
+                <input 
+                    type="checkbox" 
+                    value="agree-terms" 
+                    required
+                    v-model="termsAndConditions"
+                /> Agree with the Terms and Conditions
             </label>
         </div>
         <button class="btn btn-lg btn-warning btn-block" type="submit">
