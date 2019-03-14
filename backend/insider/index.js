@@ -3,6 +3,7 @@ const request = require('request');
 const dgram = require('dgram');
 const udp_server = dgram.createSocket('udp4');
 const mqtt = require('mqtt');
+const cors = require('cors');
 const broker = process.env.MQTT_BROKER || 'mqtt://localhost';
 const mqtt_client = mqtt.connect(broker);
 const app = express();
@@ -62,7 +63,7 @@ mqtt_client.on('message', function(topic, message) {
     add_service(message.name, address, message.service);
 });
 
-app.use('*', function(req, res) {
+app.use('*', cors(), function(req, res) {
     if (services[req.baseUrl]) {
         const url = services[req.baseUrl].address;
         const path = services[req.baseUrl].path;
