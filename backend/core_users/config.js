@@ -9,5 +9,5 @@ module.exports = {
             users: 'users'
         }
     },
-    port: 8080
+    port: 8081
 };
