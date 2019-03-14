@@ -13,6 +13,12 @@ const config = {
         db: 'test',
         collections: {
             test_collection: 'test_collection'
+        },
+        indexes: {
+            'test_collection': {
+                id: 1,
+                email: 1
+            }
         }
     },
     port: 8080

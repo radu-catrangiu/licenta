@@ -7,6 +7,8 @@ function init(config, callback) {
     const login_url = config.url;
     const db_name = config.db;
     const collections = config.collections;
+    const indexes = config.indexes || {};
+    const schemas = config.schemas || {};
 
     const url = `mongodb://${user}:${password}@${login_url}`;
     const options = {
@@ -24,24 +26,29 @@ function init(config, callback) {
         mongo_objects.mongo = db;
 
         coll_names.forEach(name => {
-            const options = {
-                // validator: {
-                //     $jsonSchema: schemas[name]
-                // }
-            };
+            let options = {};
+            
+            if (schemas[name]) {
+                options = {
+                    validator: {
+                        $jsonSchema: schemas[name]
+                    }
+                };
+            }
+
             db.createCollection(name, options);
             mongo_objects[collections[name]] = db.collection(name);
 
-            // if (indexes[name]) {
-            //     for (let key in indexes[name]) {
-            //         const obj = {};
-            //         obj[key] = indexes[name][key];
-            //         db.collection(name).createIndex(obj, {
-            //             unique: true,
-            //             background: true
-            //         });
-            //     }
-            // }
+            if (indexes[name]) {
+                for (let key in indexes[name]) {
+                    const obj = {};
+                    obj[key] = indexes[name][key];
+                    db.collection(name).createIndex(obj, {
+                        unique: true,
+                        background: true
+                    });
+                }
+            }
         });
 
         mongo_objects.db = db;
