@@ -1,0 +1,14 @@
+{
+  "name": "core_tokens",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "core_server_module": "^1.2.0"
+  }
+}
