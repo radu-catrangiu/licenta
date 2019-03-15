@@ -61,6 +61,23 @@ services:
       MQTT_BROKER: mqtt://broker/
       ANNOUNCE_INTERVAL: 5000
 
+  core-tokens:
+    build:
+      context: ./backend/core_tokens/
+      dockerfile: Dockerfile
+    container_name: core-tokens
+    networks: 
+      - net
+    depends_on:
+      - mongo
+      - broker
+    environment:
+      MONGO_HOST: database
+      MONGO_USER: root
+      MONGO_PASS: example
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
+
   test:
     build:
       context: ./backend/test/
