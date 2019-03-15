@@ -45,6 +45,7 @@ exports.create_account = (env, params, done) => {
                 const salt = encrypted.salt;
                 const login_data = {
                     username,
+                    user_id,
                     email,
                     hash,
                     salt
