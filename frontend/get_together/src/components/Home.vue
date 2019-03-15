@@ -6,8 +6,13 @@
 export default {
   mounted() {
     // eslint-disable-next-line
-    console.log(this.$http)
-    this.$router.push("/login");
+    console.log(this.$cookie);
+    const user_token = this.$cookie.get('user_token');
+    if (!user_token) {
+      this.$router.push("/login");
+    } else {
+      this.$router.push("/dashboard");
+    }
   }
 };
 </script>

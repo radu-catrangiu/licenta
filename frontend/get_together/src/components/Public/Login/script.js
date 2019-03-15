@@ -35,6 +35,11 @@ function loginAccount(self) {
     };
     
     self.$http.callAPI('/core/users', 'login', params, (err, res) => {
-        console.log(err, res);
+        if (err) {
+            console.log(err, res);
+            return ;
+        }
+        self.$cookie.set('user_token', res.user_token);
+        self.$router.push("/dashboard");
     });
 }
