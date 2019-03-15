@@ -9,7 +9,6 @@ module.exports = {
         },
         indexes: {
             tokens: {
-                user_id: 1,
                 token: 1
             }
         }
