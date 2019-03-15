@@ -60,6 +60,7 @@ services:
       MONGO_PASS: example
       MQTT_BROKER: mqtt://broker/
       ANNOUNCE_INTERVAL: 5000
+      INSIDER_URL: http://insider:8089
 
   core-tokens:
     build:
@@ -77,14 +78,7 @@ services:
       MONGO_PASS: example
       MQTT_BROKER: mqtt://broker/
       ANNOUNCE_INTERVAL: 5000
-
-  test:
-    build:
-      context: ./backend/test/
-      dockerfile: Dockerfile
-    container_name: test
-    networks: 
-      - net
+      INSIDER_URL: http://insider:8089
 
   insider:
     build:
@@ -92,7 +86,9 @@ services:
       dockerfile: Dockerfile
     container_name: insider
     networks:
-      - net
+      net:
+        aliases:
+          - insider
     ports:
       - 3333:8089
     depends_on:
