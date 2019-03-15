@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import VueGeolocation from 'vue-browser-geolocation';
-import VueRouter from 'vue-router';
+
 import { config } from './config';
 import Axios from 'axios';
 import 'bootstrap';
@@ -26,8 +25,12 @@ Vue.prototype.$http.callAPI = async (service, method, params, callback) => {
     }
 };
 
+import VueGeolocation from 'vue-browser-geolocation';
+import VueRouter from 'vue-router';
+import VueCookie from 'vue-cookie';
 Vue.use(VueGeolocation);
 Vue.use(VueRouter);
+Vue.use(VueCookie);
 
 Vue.config.productionTip = false;
 
