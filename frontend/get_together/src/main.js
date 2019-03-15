@@ -34,15 +34,16 @@ Vue.use(VueCookie);
 
 Vue.config.productionTip = false;
 
-import Login from './components/Public/Login/Login.vue';
-// import GMap from "./components/GMap.vue";
 import Home from './components/Home.vue';
+import Login from './components/Public/Login/Login.vue';
 import CreateAccount from './components/Public/Create/CreateAccount.vue';
+import Dashboard from './components/Dashboard.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: Home },
     { path: '/login', name: 'Login', component: Login },
-    { path: '/create', name: 'Create Account', component: CreateAccount }
+    { path: '/create', name: 'Create Account', component: CreateAccount },
+    { path: '/dashboard', name: 'Dashboard', component: Dashboard }
 ];
 
 const router = new VueRouter({ routes, mode: 'history' });
