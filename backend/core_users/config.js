@@ -18,7 +18,6 @@ module.exports = {
                 user_id: 1
             },
             tokens: {
-                user_id: 1,
                 token: 1
             }
         }
