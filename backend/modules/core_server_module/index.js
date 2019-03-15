@@ -5,7 +5,7 @@ const tv4 = require('tv4');
 const http = require('http');
 const jsonrpc_standard = require('./schema');
 const announcer = require('./announcer');
-const { send_result, send_error } = require('./utils');
+const { send_result, send_error, insider } = require('./utils');
 const supported_modules = {
     mongo: require('./modules/mongo')
 };
@@ -86,19 +86,28 @@ function init_handlers(port, server_config, modules, callback) {
 
     app.use(function(req, res, next) {
         if (service_names.includes(req.path)) {
-            return next();
+            const methods = services[req.path].handler;
+            if (methods[req.body.method]) {
+                return next();
+            } else {
+                return send_error("Method not implemented", req, res);
+            }
         } else {
             return res.sendStatus(404);
         }
     });
 
-    // TODO: Middleware to check if authentication is needed
-    app.use(function(req, res, next) {
-        console.debug(req.path);
+    app.use(function (req, res, next) {
         if (services[req.path].use_auth) {
-            // TODO: Make call to tokens service to verify 
-            // req.body.params.user_token
-            return next();
+            const params = { token: req.body.params.user_token };
+
+            insider('/core/tokens', 'check', params, (err, data) => {
+                if (err) {
+                    return send_error("Invalid token", req, res);
+                }
+                req.body.params.user_id = data.user_id;
+                return next();
+            });
         } else {
             return next();
         }

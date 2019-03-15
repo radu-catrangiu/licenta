@@ -29,7 +29,7 @@ const rpc_config = {
     services: {
         '/test': {
             handler: handler,
-            use_auth: false
+            use_auth: true
         }
     }
 };
