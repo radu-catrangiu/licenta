@@ -39,7 +39,7 @@ function loginAccount(self) {
             console.log(err, res);
             return ;
         }
-        self.$cookie.set('user_token', res.user_token);
+        self.$cookie.set('user_token', res.result.user_token);
         self.$router.push("/dashboard");
     });
 }
