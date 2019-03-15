@@ -17,7 +17,7 @@ module.exports = {
             logins: {
                 user_id: 1
             },
-            token: {
+            tokens: {
                 user_id: 1,
                 token: 1
             }
