@@ -5,8 +5,10 @@ import { config } from './config';
 import Axios from 'axios';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import JQuery from 'jquery';
 
 Vue.prototype.appConfig = config;
+Vue.prototype.$ = JQuery;
 Vue.prototype.$http = Axios;
 Vue.prototype.$http.callAPI = async (service, method, params, callback) => {
     const req = {
@@ -37,7 +39,7 @@ Vue.config.productionTip = false;
 import Home from './components/Home.vue';
 import Login from './components/Public/Login/Login.vue';
 import CreateAccount from './components/Public/Create/CreateAccount.vue';
-import Dashboard from './components/Dashboard.vue';
+import Dashboard from './components/Dashboard/Dashboard.vue';
 
 const routes = [
     { path: '/', name: 'Home', component: Home },

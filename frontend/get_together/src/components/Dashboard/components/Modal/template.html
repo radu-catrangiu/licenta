@@ -1,0 +1,104 @@
+<div>
+    <!-- Modal -->
+    <div
+        class="modal fade"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        data-backdrop="static"
+    >
+        <div
+            class="modal-dialog modal-lg modal-dialog-centered"
+            role="document"
+        >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        Finish Account Creation
+                    </h5>
+                </div>
+
+                <div class="modal-body bg-light">
+                    <div class="row mb-4">
+                        <div class="col"></div>
+                        <div class="col text-center">
+                            <span style="font-size: 3em; color: gray;">
+                                    <i class="fas fa-user-circle"></i>
+                            </span>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <!-- Firstname -->
+                            <div class="form-label-group">
+                                <input
+                                    type="firstname"
+                                    id="inputFirstname"
+                                    class="form-control is-valid"
+                                    placeholder="Firstname"
+                                    required
+                                    autofocus
+                                    v-model.trim="firstname"
+                                />
+                                <label for="inputFirstname">Firstname</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!-- Lastname -->
+                            <div class="form-label-group">
+                                <input
+                                    type="lastname"
+                                    id="inputLastname"
+                                    class="form-control is-valid"
+                                    placeholder="Lastname"
+                                    required
+                                    autofocus
+                                    v-model.trim="lastname"
+                                />
+                                <label for="inputLastname">Lastname</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <!-- Gender -->
+                            <select class="form-label-group custom-select custom-select-lg mb-3 is-valid">
+                                <option selected>Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col">
+                            <!-- Birthday -->
+                            <label><i class="far fa-calendar"></i> Enter Your Birthday</label>
+                            <Datepicker v-model="date" :config="options"/>
+                        </div>
+                        <div class="col">
+                            <!--  -->
+                            <label><i class="fas fa-user-alt"></i> Pick Profile Picture</label>
+                            <div class="custom-file">
+                                <input
+                                    type="file"
+                                    class="custom-file-input"
+                                    id="customFile"
+                                />
+                                <label
+                                    class="custom-file-label"
+                                    for="customFile"
+                                    >Browse Files</label
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <button class="btn btn-primary btn-block mx-5 mt-3" type="submit">
+                                Finish Account Creation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
