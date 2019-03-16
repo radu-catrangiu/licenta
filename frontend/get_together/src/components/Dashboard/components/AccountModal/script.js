@@ -32,6 +32,13 @@ export default {
         };
     },
     mounted() {
-        this.$('#exampleModalCenter').modal('show');
+        /* eslint-disable */
+        this.$('#exampleModalCenter').on('hidden.bs.modal', e => {
+            this.$('div#dashboard').css('-webkit-filter', 'blur(0px)');
+            this.$('div#dashboard').css('-moz-filter', 'blur(0px)');
+            this.$('div#dashboard').css('-o-filter', 'blur(0px)');
+            this.$('div#dashboard').css('-ms-filter', 'blur(0px)');
+            this.$('div#dashboard').css('filter', 'blur(0px)');
+        });
     }
 };

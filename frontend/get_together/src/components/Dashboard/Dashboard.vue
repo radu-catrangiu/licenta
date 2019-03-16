@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Modal/>
+    <AccountModal/>
     <div id="dashboard" class="container">
       <Header/>
       <div
@@ -18,12 +18,12 @@
 
 <script>
 import Header from "./components/Header.vue";
-import Modal from "./components/Modal/Modal.vue";
+import AccountModal from "./components/AccountModal/AccountModal.vue";
 export default {
   name: "dashboard",
   components: {
     Header,
-    Modal
+    AccountModal
   },
   data() {
     return {
