@@ -16,6 +16,10 @@ export default {
         }
     },
     mounted() {
+        const user_token = this.$cookie.get('user_token');
+        if (user_token) {
+            this.$router.push('/dashboard');
+        }
         this.username = this.$route.params.username || '';
         this.password1 = this.$route.params.password || '';
         if (this.username.length > 0 || this.password1.length > 0) {
