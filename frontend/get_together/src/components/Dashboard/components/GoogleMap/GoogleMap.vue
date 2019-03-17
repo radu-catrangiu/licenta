@@ -1,15 +1,16 @@
 <template>
-  <div class="GmapContainer">
+  <div class="GoogleMapContainer">
     <h1 v-if="!mapLoaded"> Click to load map </h1>
-    <div class="Gmap" v-on:click.once="loadMap"/>
+    <div class="GoogleMap" v-on:click.once="loadMap"/>
   </div>
 </template>
 
 <script>
-import gmapsInit from "../utils/gmaps";
+import GoogleMapInit from "./gmaps";
+import MapStyle from './mapStyle';
 
 export default {
-  name: "Gmap",
+  name: "GoogleMap",
   data: function() {
     return {
       mapLoaded: false
@@ -21,11 +22,13 @@ export default {
   methods: {
     async loadMap() {
       try {
-        const google = await gmapsInit();
+        const google = await GoogleMapInit();
         const geocoder = new google.maps.Geocoder();
-        const map = new google.maps.Map(this.$el);
+        const map = new google.maps.Map(this.$el, {
+          styles: MapStyle.night
+        });
 
-        geocoder.geocode({ address: "Bucharest" }, (results, status) => {
+        geocoder.geocode({ address: "Bucharest, Unirii" }, (results, status) => {
           if (status !== "OK" || !results[0]) {
             throw new Error(status);
           }
@@ -56,18 +59,18 @@ body {
   padding: 0;
 }
 
-.Gmap {
+.GoogleMap {
   width: 100vw;
   height: 50vh;
 }
 
-.GmapContainer {
-  width: 100vw;
+.GoogleMapContainer {
+  width: 100%;
   height: 50vh;
-  background: rgb(136, 136, 129)
+  background: gray
 }
 
-.GmapContainer h1 {
+.GoogleMapContainer h1 {
   margin: 0;
   position: absolute;
   top: 50%;
