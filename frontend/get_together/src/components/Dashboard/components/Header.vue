@@ -38,7 +38,7 @@ export default {
       this.$("div#dashboard").css("-o-filter", "blur(5px)");
       this.$("div#dashboard").css("-ms-filter", "blur(5px)");
       this.$("div#dashboard").css("filter", "blur(5px)");
-      this.$("#exampleModalCenter").modal("show");
+      this.$("#accountModal").modal("show");
     }
   }
 };
