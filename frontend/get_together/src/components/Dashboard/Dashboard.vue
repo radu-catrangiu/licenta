@@ -16,7 +16,7 @@
       </div>
       <!-- Card End -->
       <!-- Card Start -->
-      <div class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
+      <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
         <div class="card-body">
           <GoogleMap />
         </div>
@@ -48,7 +48,7 @@
 <script>
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
-import AccountModal from "./components/AccountModal/AccountModal.vue";
+import AccountModal from "./components/Modals/AccountModal/AccountModal.vue";
 import GoogleMap from "./components/GoogleMap/GoogleMap.vue";
 export default {
   name: "dashboard",
@@ -79,5 +79,9 @@ export default {
 <style>
 #obj {
   text-align: center;
+}
+
+#map_card {
+  background: #EFEFEF;
 }
 </style>

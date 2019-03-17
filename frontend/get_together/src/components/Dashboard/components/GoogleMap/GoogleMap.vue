@@ -25,7 +25,7 @@ export default {
         const google = await GoogleMapInit();
         const geocoder = new google.maps.Geocoder();
         const map = new google.maps.Map(this.$el, {
-          styles: MapStyle.night
+          styles: MapStyle.blueGray
         });
 
         geocoder.geocode({ address: "Bucharest, Unirii" }, (results, status) => {
@@ -67,7 +67,7 @@ body {
 .GoogleMapContainer {
   width: 100%;
   height: 50vh;
-  background: gray
+  background: #EFEFEF
 }
 
 .GoogleMapContainer h1 {
