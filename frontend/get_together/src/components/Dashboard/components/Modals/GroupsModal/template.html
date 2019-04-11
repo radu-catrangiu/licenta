@@ -1,0 +1,84 @@
+<div>
+    <!-- Modal -->
+    <div
+        class="modal fade"
+        id="groupsModal"
+        tabindex="-1"
+        role="dialog"
+        data-backdrop="static"
+    >
+        <div
+            class="modal-dialog modal-lg modal-dialog-centered"
+            role="document"
+        >
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Let's get started!
+                    </h5>
+                </div>
+
+                <div class="modal-body bg-light">
+                    <div class="row vdivide mb-5">
+                        <div class="col-sm text-center">
+                            <i
+                                style="font-size: 2.5em;"
+                                class="mt-3 fas fa-plus-circle"
+                            ></i>
+                        </div>
+                        <div class="col-sm text-center">
+                            <i
+                                style="font-size: 2.5em;"
+                                class="mt-3 fas fa-sign-in-alt"
+                            ></i>
+                        </div>
+                    </div>
+                    <div class="row my-2">
+                        <div class="col-sm text-center">
+                            <h2>Create a group</h2>
+                        </div>
+                        <div class="col-sm- text-center">
+                            <h4>or</h4>
+                        </div>
+                        <div class="col-sm text-center">
+                            <h2>Join a group</h2>
+                        </div>
+                    </div>
+                    <div class="row vdivide mb-2">
+                        <div class="col-sm text-center">
+                            <div class="my-4">
+                                <p class="mt-5">Create a group and invite your friends for a meetup!</p>
+                                <br>
+                                <input
+                                    type="groupname"
+                                    id="inputGroupname"
+                                    class="form-control text-center"
+                                    placeholder="Group Name"
+                                    v-model.trim="group_name"
+                                />
+                                <button class="btn btn-primary mt-4 mb-5" type="submit" data-dismiss="modal">
+                                        Create Group
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-sm text-center">
+                            <div class="my-4">
+                                <p class="mt-5">Join a group made by one of your friends by clicking a link sent by them or by pasting in the invite id</p>
+                                <input
+                                    type="invite_id"
+                                    id="inputInviteID"
+                                    class="form-control text-center"
+                                    placeholder="Invite ID"
+                                    v-model.trim="invite_id"
+                                />
+                                <button class="btn btn-warning mt-4 mb-5" type="submit" data-dismiss="modal">
+                                        Join Group
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

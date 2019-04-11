@@ -1,15 +1,16 @@
 <template>
   <div>
+    <GroupsModal/>
     <AccountModal/>
     <div id="dashboard" class="container">
       <Header/>
       <!-- Card Start -->
       <div class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
         <div class="card-body row">
-          <div class="col text-left"> 
+          <div class="col text-left">
             <h2>{Group Title}</h2>
           </div>
-          <div class="col text-right"> 
+          <div class="col text-right">
             <h2>{Member Icons}</h2>
           </div>
         </div>
@@ -18,7 +19,7 @@
       <!-- Card Start -->
       <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
         <div class="card-body">
-          <GoogleMap />
+          <GoogleMap/>
         </div>
       </div>
       <!-- Card End -->
@@ -29,7 +30,9 @@
         </div>
       </div>
       <!-- Card End -->
+
       <!-- Card Start -->
+
       <!-- <div
         class="card shadow p-2 mb-4 bg-light rounded-lg border border-white"
         v-for="i in numbers"
@@ -38,7 +41,8 @@
         <div class="card-body">
           <div v-for="j in numbers2" :key="j">{{i}}.{{j}} This is some text within a card body.</div>
         </div>
-      </div> -->
+      </div>-->
+
       <!-- Card End -->
       <Footer/>
     </div>
@@ -49,6 +53,7 @@
 import Header from "./components/Header.vue";
 import Footer from "./components/Footer.vue";
 import AccountModal from "./components/Modals/AccountModal/AccountModal.vue";
+import GroupsModal from "./components/Modals/GroupsModal/GroupsModal.vue";
 import GoogleMap from "./components/GoogleMap/GoogleMap.vue";
 export default {
   name: "dashboard",
@@ -56,6 +61,7 @@ export default {
     Header,
     Footer,
     AccountModal,
+    GroupsModal,
     GoogleMap
   },
   data() {
@@ -72,6 +78,14 @@ export default {
       this.numbers2.push(i);
     }
     document.title = "Dashboard | Get Together";
+
+    // TODO: Show modal only if user is part of no group
+    this.$("div#dashboard").css("-webkit-filter", "blur(5px)");
+    this.$("div#dashboard").css("-moz-filter", "blur(5px)");
+    this.$("div#dashboard").css("-o-filter", "blur(5px)");
+    this.$("div#dashboard").css("-ms-filter", "blur(5px)");
+    this.$("div#dashboard").css("filter", "blur(5px)");
+    this.$("#groupsModal").modal("show");
   }
 };
 </script>
@@ -82,6 +96,6 @@ export default {
 }
 
 #map_card {
-  background: #EFEFEF;
+  background: #efefef;
 }
 </style>
