@@ -60,7 +60,7 @@ body {
 }
 
 .GoogleMap {
-  width: 100vw;
+  /* width: 100vw; */
   height: 50vh;
 }
 
