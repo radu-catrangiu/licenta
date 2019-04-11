@@ -10,7 +10,7 @@
             <a
               href="#"
               role="button"
-              id="notificationsPopoverLink"
+              id="notificationsDropdownLink"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
@@ -19,14 +19,14 @@
                 <i class="far fa-bell"></i>
               </span>
             </a>
-            <notifications-popover/>
+            <notifications-dropdown/>
           </div>
 
           <div class="btn-group mx-4">
             <a
               href="#"
               role="button"
-              id="groupsPopoverLink"
+              id="groupsDropdownLink"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
@@ -35,7 +35,7 @@
                 <i class="fas fa-users"></i>
               </span>
             </a>
-            <groups-popover/>
+            <groups-dropdown/>
           </div>
           <div class="btn-group ml-4">
           <a href="#" v-on:click="openModal('#accountModal')">
@@ -53,12 +53,12 @@
 </template>
 
 <script>
-import GroupsPopover from "./Popovers/GroupsPopover/GroupsPopover.vue";
-import NotificationsPopover from "./Popovers/NotificationsPopover/NotificationsPopover.vue";
+import GroupsDropdown from "./Dropdowns/GroupsDropdown/GroupsDropdown.vue";
+import NotificationsDropdown from "./Dropdowns/NotificationsDropdown/NotificationsDropdown.vue";
 export default {
   components: {
-    GroupsPopover,
-    NotificationsPopover
+    GroupsDropdown,
+    NotificationsDropdown
   },
   methods: {
     openModal(id) {
