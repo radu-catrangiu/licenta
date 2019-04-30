@@ -71,8 +71,12 @@ app.use('*', cors(), function(req, res) {
 
         pipe.on('error', err => {
             console.error(req.baseUrl, ' : ', err.message);
-            clearTimeout(services[req.baseUrl].expiry);
-            delete services[req.baseUrl];
+            try {
+                clearTimeout(services[req.baseUrl].expiry);
+                delete services[req.baseUrl];
+            } catch (error) {
+                console.error(req.baseUrl, ' : ', error.message);
+            }
             res.sendStatus(404);
         });
         pipe.on('response', () => {
