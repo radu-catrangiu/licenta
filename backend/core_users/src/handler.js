@@ -1,4 +1,4 @@
-const uuid = require('uuid');
+const uuid = require('uuid').v4;
 const async = require('async');
 const utils = require('./utils');
 
@@ -66,10 +66,10 @@ exports.create_account = (env, params, done) => {
             },
             function insert_user(done) {
                 const user_data = {
+                    groups: [],
                     info: {},
                     user_id,
                     username,
-                    password,
                     email
                 };
 
