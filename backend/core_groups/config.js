@@ -1,0 +1,23 @@
+module.exports = {
+    mongo: {
+        url: process.env.MONGO_HOST || 'localhost',
+        user: process.env.MONGO_USER || 'root',
+        password: process.env.MONGO_PASS || 'example',
+        db: 'core',
+        collections: {
+            groups: 'groups',
+            users: 'users',
+            invites: 'invites'
+        },
+        indexes: {
+            groups: {
+                group_id: 1
+            },
+            invites: {
+                invite_id: 1,
+                redeem_code: 1
+            }
+        }
+    },
+    port: 8081
+};
