@@ -220,6 +220,34 @@ exports.leave_group = (env, params, done) => {
             },
             (group, done) => {
                 if (group.members.length > 0) {
+                    return done(null, group);
+                }
+
+                const invites = group.open_invites.map(invite => {
+                    return function(done) {
+                        const query = { invite_id: invite.invite_id };
+                        env.invites.deleteOne(query, (err, res) => {
+                            if (err || !res) {
+                                return done(
+                                    'Something went wrong deleting the group'
+                                );
+                            }
+
+                            return done();
+                        });
+                    };
+                });
+
+                async.parallel(invites, err => {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    return done(null, group);
+                });
+            },
+            (group, done) => {
+                if (group.members.length > 0) {
                     return done();
                 }
 
