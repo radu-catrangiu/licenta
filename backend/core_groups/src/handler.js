@@ -61,7 +61,7 @@ exports.retrieve_group_details = (env, params, done) => {
                         return done(err);
                     }
 
-                    return done(null, { members, ...group_data.group_info });
+                    return done(null, { group_id, members, ...group_data.group_info });
                 });
             }
         ],
@@ -154,7 +154,7 @@ exports.create_group = (env, params, done) => {
                 return done(err);
             }
 
-            return done(null, 'ok');
+            return done(null, { group_id: group.group_id });
         }
     );
 };
@@ -477,7 +477,7 @@ exports.join_group = (env, params, done) => {
                 return done(err);
             }
 
-            return done(null, group_id);
+            return done(null, { group_id });
         }
     );
 };
