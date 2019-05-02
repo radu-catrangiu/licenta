@@ -159,12 +159,6 @@ async function retrieve_group_details(self) {
         }
 
         self.current_group = res;
-        for (let i = 0; i < 8; i++)
-          for (let j = 0; j < 10; j++)
-            self.current_group.members.push({
-              username: (14 + i).toString(36) + (14 + j).toString(36)
-            });
-
         resolve(true);
       }
     );
