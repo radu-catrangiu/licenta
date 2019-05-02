@@ -2,7 +2,7 @@
     <!-- Modal -->
     <div
         class="modal fade"
-        id="groupsModal"
+        id="onboardingModal"
         tabindex="-1"
         role="dialog"
         data-backdrop="static"
@@ -56,7 +56,7 @@
                                     placeholder="Group Name"
                                     v-model.trim="group_name"
                                 />
-                                <button class="btn btn-primary mt-4 mb-5" type="submit" data-dismiss="modal">
+                                <button class="btn btn-primary mt-4 mb-5" v-on:click="create_group">
                                         Create Group
                                 </button>
                             </div>
@@ -71,7 +71,7 @@
                                     placeholder="Invite ID"
                                     v-model.trim="invite_id"
                                 />
-                                <button class="btn btn-warning mt-4 mb-5" type="submit" data-dismiss="modal">
+                                <button class="btn btn-warning mt-4 mb-5" v-on:click="join_group">
                                         Join Group
                                 </button>
                             </div>
