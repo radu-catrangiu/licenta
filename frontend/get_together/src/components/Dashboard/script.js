@@ -25,6 +25,46 @@ export default {
             current_group: {}
         };
     },
+    computed: {
+        locations() {
+            let index = this.day_index;
+            if (!this.current_group.locations) {
+                return {};
+            }
+            const locations = this.current_group.locations.map(user => {
+                if (!user.days[index] || !user.days[index].lat_lng) {
+                    return null;
+                }
+
+                return {
+                    username: user.username,
+                    lat_lng: user.days[index].lat_lng
+                };
+            });
+
+            return locations;
+        },
+        venues() {
+            let index = this.day_index;
+            const venues_mock = [
+                [
+                    {
+                        "lat_lng": {
+                            "lat": 44.432940104234106,
+                            "lng": 26.103383679841272
+                        }
+                    }
+                ],
+                [],
+                [],
+                [],
+                [],
+                [],
+                []
+            ];
+            return venues_mock[index];
+        }
+    },
     async mounted() {
         await this.validate_token(this, null);
 
@@ -36,7 +76,7 @@ export default {
     },
     updated() {
         // eslint-disable-next-line
-        console.log(this.$('[data-toggle="tooltip"]'));
+        // console.log(this.$('[data-toggle="tooltip"]'));
         this.$('[data-toggle="tooltip"]').tooltip({ animation: false });
     },
     filters: {
@@ -47,6 +87,70 @@ export default {
     methods: {
         open_groups_mgmt() {
             show_modal(this, '#groupsModal', 'show');
+        },
+        get_browser_location() {
+            this.$getLocation({}).then(coordinates => {
+                this.point_to_location_callback({ lat_lng: coordinates });
+            });
+        },
+        point_to_location_callback(location) {
+            let user_locations = this.current_group.locations.find(
+                user => user.username === this.user_info.username
+            );
+
+            if (!user_locations) {
+                user_locations = {
+                    username: this.user_info.username,
+                    days: Array(7)
+                };
+                this.current_group.locations.push(user_locations);
+            }
+
+            if (!user_locations.days[this.day_index]) {
+                user_locations.days[this.day_index] = location;
+            } else {
+                user_locations.days[this.day_index].lat_lng = location.lat_lng;
+            }
+
+            const user_token = this.$cookie.get('user_token');
+            const params = {
+                user_token,
+                group_id: this.current_group.group_id,
+                day: this.day_index,
+                lat_lng: location.lat_lng
+            };
+            this.$http.callAPI('/core/locations', 'report_location', params);
+        },
+        get_point_location() {
+            this.$refs.google_map.point_to_location = true;
+        },
+        delete_location() {
+            let user_locations = this.current_group.locations.find(
+                user => user.username === this.user_info.username
+            );
+
+            if (
+                !user_locations ||
+                !user_locations.days ||
+                !user_locations.days[this.day_index] ||
+                !user_locations.days[this.day_index].lat_lng ||
+                !(
+                    user_locations.days[this.day_index].lat_lng.lat &&
+                    user_locations.days[this.day_index].lat_lng.lng
+                )
+            ) {
+                return;
+            }
+
+            user_locations.days[this.day_index].lat_lng = {};
+
+            const user_token = this.$cookie.get('user_token');
+            const params = {
+                user_token,
+                group_id: this.current_group.group_id,
+                day: this.day_index
+            };
+            this.$http.callAPI('/core/locations', 'delete_location', params);
         }
     }
 };

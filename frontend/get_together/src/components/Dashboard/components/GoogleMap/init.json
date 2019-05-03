@@ -1,0 +1,61 @@
+{
+    "address_components": [
+        {
+            "long_name": "București",
+            "short_name": "București",
+            "types": [
+                "locality",
+                "political"
+            ]
+        },
+        {
+            "long_name": "Municipiul București",
+            "short_name": "Municipiul București",
+            "types": [
+                "administrative_area_level_2",
+                "political"
+            ]
+        },
+        {
+            "long_name": "Municipiul București",
+            "short_name": "Municipiul București",
+            "types": [
+                "administrative_area_level_1",
+                "political"
+            ]
+        },
+        {
+            "long_name": "România",
+            "short_name": "RO",
+            "types": [
+                "country",
+                "political"
+            ]
+        }
+    ],
+    "formatted_address": "București, România",
+    "geometry": {
+        "bounds": {
+            "south": 44.3342445,
+            "west": 25.963700099999983,
+            "north": 44.541407,
+            "east": 26.225574999999935
+        },
+        "location": {
+            "lat": 44.4267674,
+            "lng": 26.102538399999958
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+            "south": 44.45561268885971,
+            "west": 26.009141583894007,
+            "north": 44.39750424069808,
+            "east": 26.197625775788538
+        }
+    },
+    "place_id": "ChIJT608vzr5sUARKKacfOMyBqw",
+    "types": [
+        "locality",
+        "political"
+    ]
+}

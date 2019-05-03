@@ -1,48 +1,83 @@
 <template>
   <div class="GoogleMapContainer">
-    <h1 v-if="!mapLoaded"> Click to load map </h1>
+    <h1 v-if="!mapLoaded">Click to load map, {{user.username}}</h1>
     <div class="GoogleMap" v-on:click.once="loadMap"/>
   </div>
 </template>
 
 <script>
 import GoogleMapInit from "./gmaps";
-import MapStyle from './mapStyle';
+import MapStyle from "./mapStyle";
+import init from "./init.json";
+
+let Google;
 
 export default {
   name: "GoogleMap",
   data: function() {
     return {
-      mapLoaded: false
+      map: {},
+      markers: {},
+      venue_markers: [],
+      mapLoaded: false,
+      point_to_location: false
     };
   },
+  props: ["user", "venues", "locations", "point_to_location_callback"],
   async mounted() {
-    // await this.loadMap();
+    /* eslint-disable */
+  },
+  watch: {
+    locations: function(new_val, old_val) {
+      if (this.mapLoaded) {
+        console.log("watch:", new_val);
+        unset_markers(this.markers);
+        set_markers(this.map, this.markers, new_val);
+      }
+    },
+    venues: function(new_val, old_val) {
+      if (this.mapLoaded) {
+        unset_venue_markers(this.venue_markers);
+        set_venue_marker(this.map, this.venue_markers, new_val);
+      }
+    }
   },
   methods: {
     async loadMap() {
       try {
-        const google = await GoogleMapInit();
-        const geocoder = new google.maps.Geocoder();
-        const map = new google.maps.Map(this.$el, {
-          styles: MapStyle.blueGray
-        });
+        Google = await GoogleMapInit();
 
-        geocoder.geocode({ address: "Bucharest, Unirii" }, (results, status) => {
-          if (status !== "OK" || !results[0]) {
-            throw new Error(status);
+        this.map = new Google.maps.Map(this.$el, {
+          styles: MapStyle.blueGray,
+          zoom: 12,
+          streetViewControl: false,
+          disableDefaultUI: true,
+          gestureHandling: "cooperative"
+        });
+        let map = this.map;
+
+        map.setCenter(init.geometry.location);
+        map.fitBounds(init.geometry.viewport);
+
+        map.addListener("click", e => {
+          if (this.point_to_location) {
+            const location = {
+              lat_lng: {
+                lat: e.latLng.lat(),
+                lng: e.latLng.lng()
+              }
+            };
+
+            if (this.point_to_location_callback)
+              this.point_to_location_callback(location);
+
+            this.point_to_location = false;
           }
-          map.setOptions({
-            streetViewControl: false,
-            disableDefaultUI: true,
-            scrollwheel: false
-          });
-          map.setCenter(results[0].geometry.location);
-          map.fitBounds(results[0].geometry.viewport);
-
-          map.setZoom(12);
-          this.mapLoaded = true;
         });
+
+        this.mapLoaded = true;
+        set_markers(this.map, this.markers, this.locations);
+        set_venue_marker(this.map, this.venue_markers, this.venues);
       } catch (error) {
         // eslint-disable-next-line
         console.debug(error);
@@ -50,6 +85,67 @@ export default {
     }
   }
 };
+
+function unset_markers(markers) {
+  for (let user in markers) {
+    markers[user].setVisible(false);
+  }
+}
+
+function set_markers(map, markers, locations) {
+  locations.forEach(location => {
+    if (!location) {
+      return;
+    }
+
+    if (!markers[location.username]) {
+      markers[location.username] = new Google.maps.Marker({
+        map: map,
+        label: {
+          color: "black",
+          fontWeight: "bold",
+          text: location.username
+        }
+      });
+    }
+    if (location.lat_lng && location.lat_lng.lat && location.lat_lng.lng)
+      move_marker(markers[location.username], location.lat_lng);
+  });
+}
+
+function move_marker(marker, position) {
+  if (!marker) {
+    return;
+  }
+  marker.setPosition(position);
+  marker.setVisible(true);
+}
+
+function set_venue_marker(map, venue_markers, locations) {
+  locations.forEach(location => {
+    if (!location) {
+      return;
+    }
+    const marker = new Google.maps.Marker({
+      map: map,
+      icon: {
+        url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+      }
+    });
+    venue_markers.push(marker);
+
+    if (location.lat_lng && location.lat_lng.lat && location.lat_lng.lng)
+      move_marker(marker, location.lat_lng);
+
+    console.log("venue marker set", marker);
+  });
+}
+
+function unset_venue_markers(venue_markers) {
+  venue_markers.forEach(marker => {
+    marker.setMap(null);
+  });
+}
 </script>
 
 <style>
@@ -67,7 +163,7 @@ body {
 .GoogleMapContainer {
   width: 100%;
   height: 50vh;
-  background: #EFEFEF
+  background: #efefef;
 }
 
 .GoogleMapContainer h1 {

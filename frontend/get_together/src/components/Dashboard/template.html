@@ -30,7 +30,13 @@
     <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
       <div class="card-body">
         <div class="row mb-2">
-          <GoogleMap :group="current_group" :user="user_info"/>
+          <GoogleMap 
+            ref="google_map" 
+            :locations="locations" 
+            :user="user_info"
+            :venues="venues"
+            :point_to_location_callback="point_to_location_callback"
+          />
         </div>
         <div class="row">
           <div class="col">
@@ -74,7 +80,11 @@
     <!-- Card End -->
     <!-- Card Start -->
     <div v-if="show_schedule_card" class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
-      <button class="btn btn-primary" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
+      <div class="card-body">
+        <button class="btn btn-warning mr-2" v-on:click="get_browser_location">Get Browser Location</button>
+        <button class="btn btn-success mr-2" v-on:click="get_point_location">Point to location</button>
+        <button class="btn btn-danger" v-on:click="delete_location">Delete location for selected day</button>
+      </div>
     </div>
     <!-- Card End -->
     <Footer/>
