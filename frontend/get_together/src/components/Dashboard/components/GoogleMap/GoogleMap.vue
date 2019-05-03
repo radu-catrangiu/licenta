@@ -121,9 +121,9 @@ function move_marker(marker, position) {
   marker.setVisible(true);
 }
 
-function set_venue_marker(map, venue_markers, locations) {
-  locations.forEach(location => {
-    if (!location) {
+function set_venue_marker(map, venue_markers, venues) {
+  venues.forEach(venue => {
+    if (!venue) {
       return;
     }
     const marker = new Google.maps.Marker({
@@ -134,8 +134,8 @@ function set_venue_marker(map, venue_markers, locations) {
     });
     venue_markers.push(marker);
 
-    if (location.lat_lng && location.lat_lng.lat && location.lat_lng.lng)
-      move_marker(marker, location.lat_lng);
+    if (venue.geometry.location && venue.geometry.location.lat && venue.geometry.location.lng)
+      move_marker(marker, venue.geometry.location);
 
     console.log("venue marker set", marker);
   });
