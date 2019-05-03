@@ -13,6 +13,9 @@ Vue.prototype.appConfig = config;
 Vue.prototype.$ = JQuery;
 Vue.prototype.$http = Axios;
 Vue.prototype.$http.callAPI = async (service, method, params, callback) => {
+    if (!callback) {
+        callback = () => {};
+    }
     const req = {
         id: 1,
         jsonrpc: '2.0',
