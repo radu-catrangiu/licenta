@@ -1,0 +1,82 @@
+<div>
+  <OnboardingModal/>
+  <GroupsModal :group="current_group"/>
+  <AccountModal/>
+  <div id="dashboard" class="container">
+    <Header/>
+    <!-- Card Start -->
+    <div class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
+      <div class="card-body row" style="display: -webkit-box;">
+        <div class="col text-left">
+          <h2 v-if="!current_group.name">{Group Name}</h2>
+          <h2 v-else>{{current_group.name}}</h2>
+        </div>
+        <div class="col text-right">
+          <div v-if="!current_group.members">
+            <h2>{Member Icons}</h2>
+          </div>
+          <div v-else class="testimonial-group">
+            <div class="row justify-content-end pr-3">
+              <div class="col-xs-1 ml-2 circle" v-for="member in current_group.members" :key="member.username">
+                <div data-toggle="tooltip" data-placement="left" :title="member.username">{{ member.username | initial }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card End -->
+    <!-- Card Start -->
+    <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
+      <div class="card-body">
+        <div class="row mb-2">
+          <GoogleMap :group="current_group" :user="user_info"/>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="btn-group btn-group-toggle">
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 0 }">
+                <input type="radio" :value="0" v-model="day_index" id="monday" autocomplete="off" checked> Monday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 1 }">
+                <input type="radio" :value="1" v-model="day_index" id="tuesday" autocomplete="off"> Tuesday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 2 }">
+                <input type="radio" :value="2" v-model="day_index" id="wednesday" autocomplete="off"> Wednesday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 3 }">
+                <input type="radio" :value="3" v-model="day_index" id="thursday" autocomplete="off"> Thurday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 4 }">
+                <input type="radio" :value="4" v-model="day_index" id="friday" autocomplete="off"> Friday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 5 }">
+                <input type="radio" :value="5" v-model="day_index" id="saturday" autocomplete="off"> Saturday
+              </label>
+              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 6 }">
+                <input type="radio" :value="6" v-model="day_index"  id="sunday" autocomplete="off"> Sunday
+              </label>
+            </div>
+          </div>
+          <div class="col text-right">
+            <button 
+              class="btn btn-info" 
+              data-toggle="button" 
+              aria-pressed="false"  
+              v-on:click="show_schedule_card = !show_schedule_card">
+              Enter schedule
+            </button>
+            <button class="btn btn-primary ml-2" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card End -->
+    <!-- Card Start -->
+    <div v-if="show_schedule_card" class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
+      <button class="btn btn-primary" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
+    </div>
+    <!-- Card End -->
+    <Footer/>
+  </div>
+</div>
