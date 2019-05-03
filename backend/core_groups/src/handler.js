@@ -7,7 +7,7 @@ exports.retrieve_group_details = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 const query = { group_id };
                 const projection = { _id: false, open_invites: false };
                 env.groups.findOne(query, { projection }, (err, res) => {
@@ -21,7 +21,7 @@ exports.retrieve_group_details = (env, params, done) => {
                 });
             },
             (group_data, done) => {
-                const members = group_data.members.map(user_id => {
+                const members = group_data.members.map((user_id) => {
                     return function(done) {
                         const query = { user_id };
                         const projection = {
@@ -47,8 +47,17 @@ exports.retrieve_group_details = (env, params, done) => {
                     if (err) {
                         return done(err);
                     }
+                    const locations = group_data.locations.map((location) => {
+                        delete location.user_id;
+                        return location;
+                    });
 
-                    return done(null, { group_id, members, ...group_data.group_info });
+                    return done(null, {
+                        group_id,
+                        members,
+                        locations,
+                        ...group_data.group_info
+                    });
                 });
             }
         ],
@@ -75,7 +84,16 @@ exports.create_group = (env, params, done) => {
         },
         timestamp: new Date(),
         open_invites: [], // invite ids here
-        locations: []
+        locations: [
+            {
+                user_id,
+                username: null,
+                days: Array(7).fill({
+                    time_intervals: [],
+                    lat_lng: {}
+                })
+            }
+        ]
     };
 
     if (!group_name) {
@@ -84,13 +102,13 @@ exports.create_group = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 const query = { user_id };
                 env.users.findOne(query, (err, res) => {
                     if (err || !res) {
                         return done('Something went wrong creating the group');
                     }
-
+                    group.locations[0].username = res.username;
                     return done(null, res.groups);
                 });
             },
@@ -114,7 +132,7 @@ exports.create_group = (env, params, done) => {
                     return done();
                 });
             },
-            done => {
+            (done) => {
                 env.groups.insertOne(group, (err, res) => {
                     if (err || !res) {
                         return done('Something went wrong creating the group');
@@ -123,7 +141,7 @@ exports.create_group = (env, params, done) => {
                     return done();
                 });
             },
-            done => {
+            (done) => {
                 const query = { user_id };
                 const update = {
                     $push: { groups: group.group_id }
@@ -137,7 +155,7 @@ exports.create_group = (env, params, done) => {
                 });
             }
         ],
-        err => {
+        (err) => {
             if (err) {
                 return done(err);
             }
@@ -176,7 +194,7 @@ exports.leave_group = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 const query = { user_id };
                 const update = { $pull: { groups: group_id } };
                 env.users.updateOne(query, update, (err, res) => {
@@ -187,9 +205,11 @@ exports.leave_group = (env, params, done) => {
                     return done();
                 });
             },
-            done => {
+            (done) => {
                 const query = { group_id };
-                const update = { $pull: { members: user_id } };
+                const update = {
+                    $pull: { members: user_id, locations: { user_id } }
+                };
                 const options = { returnOriginal: false };
                 env.groups.findOneAndUpdate(
                     query,
@@ -211,7 +231,7 @@ exports.leave_group = (env, params, done) => {
                     return done(null, group);
                 }
 
-                const invites = group.open_invites.map(invite => {
+                const invites = group.open_invites.map((invite) => {
                     return function(done) {
                         const query = { invite_id: invite.invite_id };
                         env.invites.deleteOne(query, (err, res) => {
@@ -226,7 +246,7 @@ exports.leave_group = (env, params, done) => {
                     };
                 });
 
-                async.parallel(invites, err => {
+                async.parallel(invites, (err) => {
                     if (err) {
                         return done(err);
                     }
@@ -250,7 +270,7 @@ exports.leave_group = (env, params, done) => {
                 });
             }
         ],
-        err => {
+        (err) => {
             if (err) {
                 return done(err);
             }
@@ -266,7 +286,7 @@ exports.delete_group = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 const query = { group_id };
                 const projection = { _id: 0 };
 
@@ -285,7 +305,7 @@ exports.delete_group = (env, params, done) => {
                 });
             },
             (group_data, done) => {
-                const members = group_data.members.map(user_id => {
+                const members = group_data.members.map((user_id) => {
                     return function(done) {
                         const query = { user_id };
                         const update = { $pull: { groups: group_id } };
@@ -301,7 +321,7 @@ exports.delete_group = (env, params, done) => {
                     };
                 });
 
-                async.parallel(members, err => {
+                async.parallel(members, (err) => {
                     if (err) {
                         return done(err);
                     }
@@ -310,7 +330,7 @@ exports.delete_group = (env, params, done) => {
                 });
             },
             (group_data, done) => {
-                const invites = group_data.open_invites.map(invite => {
+                const invites = group_data.open_invites.map((invite) => {
                     return function(done) {
                         const query = { invite_id: invite.invite_id };
                         env.invites.deleteOne(query, (err, res) => {
@@ -325,7 +345,7 @@ exports.delete_group = (env, params, done) => {
                     };
                 });
 
-                async.parallel(invites, err => {
+                async.parallel(invites, (err) => {
                     if (err) {
                         return done(err);
                     }
@@ -333,7 +353,7 @@ exports.delete_group = (env, params, done) => {
                     return done();
                 });
             },
-            done => {
+            (done) => {
                 const query = { group_id };
 
                 env.groups.removeOne(query, (err, res) => {
@@ -345,7 +365,7 @@ exports.delete_group = (env, params, done) => {
                 });
             }
         ],
-        err => {
+        (err) => {
             if (err) {
                 return done(err);
             }
@@ -360,7 +380,7 @@ exports.join_group = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 const query = { redeem_code };
                 const projection = { _id: 0 };
 
@@ -447,9 +467,30 @@ exports.join_group = (env, params, done) => {
                 });
             },
             (group_id, done) => {
+                const query = { user_id };
+                const projection = { username: true };
+                env.users.findOne(query, { projection }, (err, res) => {
+                    if (err || !res) {
+                        return done(
+                            'Something went wrong retrieving the group details'
+                        );
+                    }
+
+                    return done(null, group_id, res.username);
+                });
+            },
+            (group_id, username, done) => {
+                const user_locations = {
+                    user_id,
+                    username,
+                    days: Array(7).fill({
+                        time_intervals: [],
+                        lat_lng: {}
+                    })
+                };
                 const query = { group_id };
                 const update = {
-                    $push: { members: user_id }
+                    $push: { members: user_id, locations: user_locations }
                 };
                 env.groups.updateOne(query, update, (err, res) => {
                     if (err || !res) {
@@ -486,7 +527,7 @@ exports.create_invite = (env, params, done) => {
 
     async.waterfall(
         [
-            done => {
+            (done) => {
                 env.invites.insertOne(invite, (err, res) => {
                     if (err || !res) {
                         return done('Something went wrong creating the invite');
@@ -495,7 +536,7 @@ exports.create_invite = (env, params, done) => {
                     return done();
                 });
             },
-            done => {
+            (done) => {
                 const query = { group_id };
                 const update = {
                     $push: {
@@ -515,7 +556,7 @@ exports.create_invite = (env, params, done) => {
                 });
             }
         ],
-        err => {
+        (err) => {
             if (err) {
                 return done(err);
             }
