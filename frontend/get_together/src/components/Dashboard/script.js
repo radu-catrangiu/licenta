@@ -22,7 +22,8 @@ export default {
             show_schedule_card: false,
             user_info: {},
             group_ids: [],
-            current_group: {}
+            current_group: {},
+            all_venues: Array(7)
         };
     },
     computed: {
@@ -46,32 +47,18 @@ export default {
         },
         venues() {
             let index = this.day_index;
-            const venues_mock = [
-                [
-                    {
-                        "lat_lng": {
-                            "lat": 44.432940104234106,
-                            "lng": 26.103383679841272
-                        }
-                    }
-                ],
-                [],
-                [],
-                [],
-                [],
-                [],
-                []
-            ];
-            return venues_mock[index];
+            return this.all_venues[index];
         }
     },
     async mounted() {
         await this.validate_token(this, null);
 
+        
         document.title = 'Dashboard | Get Together';
         let res = await get_user_info(this);
         if (res) {
             await retrieve_group_details(this);
+            await get_venues_list(this);
         }
     },
     updated() {
@@ -215,6 +202,33 @@ async function retrieve_group_details(self) {
                 }
 
                 self.current_group = res;
+                resolve(true);
+            }
+        );
+    });
+}
+
+function get_venues_list(self) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id: self.$cookie.get('group_id') || self.group_ids[0]
+        };
+        self.$http.callAPI(
+            '/core/locations',
+            'get_venues',
+            params,
+            (err, res) => {
+                // eslint-disable-next-line
+                console.log(err, res);
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+
+                self.all_venues = res;
                 resolve(true);
             }
         );

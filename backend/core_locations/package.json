@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "core_server_module": "^1.3.0"
+    "async": "^2.6.2",
+    "core_server_module": "^1.3.0",
+    "request": "^2.88.0"
   }
 }

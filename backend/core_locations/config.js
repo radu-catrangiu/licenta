@@ -9,5 +9,6 @@ module.exports = {
         },
         indexes: {}
     },
+    google_api_key: 'AIzaSyB4Es6NlcHrTX1L9bN92asDcRZa6nP4p_M',
     port: 8081
 };
