@@ -2,19 +2,6 @@ const uuid = require('uuid').v4;
 const async = require('async');
 const redeemable = require('coupon-code');
 
-exports.retrieve_groups = (env, params, done) => {
-    const user_id = params.user_id;
-
-    const query = { user_id };
-    env.users.findOne(query, (err, res) => {
-        if (err || !res) {
-            return done('Something went wrong retrieving the groups');
-        }
-
-        return done(null, res.groups);
-    });
-};
-
 exports.retrieve_group_details = (env, params, done) => {
     const group_id = params.group_id;
 
