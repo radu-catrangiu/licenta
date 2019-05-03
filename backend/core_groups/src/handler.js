@@ -74,7 +74,8 @@ exports.create_group = (env, params, done) => {
             description: ''
         },
         timestamp: new Date(),
-        open_invites: [] // invite ids here
+        open_invites: [], // invite ids here
+        locations: []
     };
 
     if (!group_name) {
