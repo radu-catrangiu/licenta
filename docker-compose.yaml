@@ -62,6 +62,24 @@ services:
       ANNOUNCE_INTERVAL: 5000
       INSIDER_URL: http://insider:8089
 
+  core-locations:
+    build:
+      context: ./backend/core_locations/
+      dockerfile: Dockerfile
+    container_name: core-locations
+    networks: 
+      - net
+    depends_on:
+      - mongo
+      - broker
+    environment:
+      MONGO_HOST: database
+      MONGO_USER: root
+      MONGO_PASS: example
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
+      INSIDER_URL: http://insider:8089
+
   core-groups:
     build:
       context: ./backend/core_groups/
