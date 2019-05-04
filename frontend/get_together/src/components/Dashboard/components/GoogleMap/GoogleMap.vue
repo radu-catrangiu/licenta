@@ -38,7 +38,7 @@ export default {
     venues: function(new_val, old_val) {
       if (this.mapLoaded) {
         unset_venue_markers(this.venue_markers);
-        set_venue_marker(this.map, this.venue_markers, new_val);
+        set_venue_marker(this, this.map, this.venue_markers, new_val);
       }
     }
   },
@@ -60,6 +60,7 @@ export default {
         map.fitBounds(init.geometry.viewport);
 
         map.addListener("click", e => {
+          console.log(e);
           if (this.point_to_location) {
             const location = {
               lat_lng: {
@@ -76,8 +77,9 @@ export default {
         });
 
         this.mapLoaded = true;
+        this.$parent.map_loaded = true;
         set_markers(this.map, this.markers, this.locations);
-        set_venue_marker(this.map, this.venue_markers, this.venues);
+        set_venue_marker(this, this.map, this.venue_markers, this.venues);
       } catch (error) {
         // eslint-disable-next-line
         console.debug(error);
@@ -121,7 +123,7 @@ function move_marker(marker, position) {
   marker.setVisible(true);
 }
 
-function set_venue_marker(map, venue_markers, venues) {
+function set_venue_marker(self, map, venue_markers, venues) {
   venues.forEach(venue => {
     if (!venue) {
       return;
@@ -132,12 +134,19 @@ function set_venue_marker(map, venue_markers, venues) {
         url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
       }
     });
+
+    marker.addListener("click", function() {
+      self.$parent.venue_clicked(venue);
+    });
+
     venue_markers.push(marker);
 
-    if (venue.geometry.location && venue.geometry.location.lat && venue.geometry.location.lng)
+    if (
+      venue.geometry.location &&
+      venue.geometry.location.lat &&
+      venue.geometry.location.lng
+    )
       move_marker(marker, venue.geometry.location);
-
-    console.log("venue marker set", marker);
   });
 }
 

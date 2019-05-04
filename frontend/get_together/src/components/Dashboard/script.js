@@ -18,6 +18,7 @@ export default {
     },
     data() {
         return {
+            map_loaded: false,
             day_index: 0,
             show_schedule_card: false,
             user_info: {},
@@ -53,7 +54,6 @@ export default {
     async mounted() {
         await this.validate_token(this, null);
 
-        
         document.title = 'Dashboard | Get Together';
         let res = await get_user_info(this);
         if (res) {
@@ -138,6 +138,25 @@ export default {
                 day: this.day_index
             };
             this.$http.callAPI('/core/locations', 'delete_location', params);
+        },
+        venue_clicked(venue) {
+            const elem = this.$('#' + venue.id);
+            if (elem.length == 0 || !this.map_loaded) {
+                return;
+            }
+
+            elem.addClass('clicked');
+            this.$([document.documentElement, document.body]).animate(
+                {
+                    scrollTop: elem.offset().top
+                },
+                500,
+                () => {
+                    setTimeout(function() {
+                        elem.removeClass('clicked');
+                    }, 1000);
+                }
+            );
         }
     }
 };
