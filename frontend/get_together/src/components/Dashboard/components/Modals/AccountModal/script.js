@@ -40,5 +40,12 @@ export default {
             this.$('div#dashboard').css('-ms-filter', 'blur(0px)');
             this.$('div#dashboard').css('filter', 'blur(0px)');
         });
+    },
+    methods: {
+        logout() {
+            this.$cookie.delete("group_id");
+            this.$cookie.delete("user_token");
+            this.$router.push('/');
+        }
     }
 };
