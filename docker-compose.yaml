@@ -1,6 +1,18 @@
 version: "3.1"
 
 services:
+  frontend:
+    build:
+      context: ./frontend/get_together/
+      dockerfile: Dockerfile
+    container_name: frontend
+    networks: 
+      - net
+    ports:
+      - 80:80
+    environment:
+      NODE_ENV: "beta"
+
   mongo:
     image: mongo
     command: --smallfiles

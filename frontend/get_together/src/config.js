@@ -3,7 +3,7 @@ let config;
 
 if (process.env.NODE_ENV === "production") {
   config = {
-    $apiUrl: "http://localhost:8080"
+    $apiUrl: "http://localhost:3333"
   };
 } else {
   config = {
