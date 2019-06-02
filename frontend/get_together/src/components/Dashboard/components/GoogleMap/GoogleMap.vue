@@ -166,7 +166,7 @@ body {
 
 .GoogleMap {
   /* width: 100vw; */
-  height: 50vh;
+  height: 55vh;
 }
 
 .GoogleMapContainer {
