@@ -16,7 +16,12 @@
                     <h5 class="modal-title">
                         Account Details
                     </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -26,7 +31,7 @@
                         <div class="col"></div>
                         <div class="col text-center">
                             <span style="font-size: 3em; color: gray;">
-                                    <i class="fas fa-user-circle"></i>
+                                <i class="fas fa-user-circle"></i>
                             </span>
                         </div>
                         <div class="col"></div>
@@ -64,7 +69,9 @@
                         </div>
                         <div class="col">
                             <!-- Gender -->
-                            <select class="form-label-group custom-select custom-select-lg mb-3 is-valid">
+                            <select
+                                class="form-label-group custom-select custom-select-lg mb-3 is-valid"
+                            >
                                 <option selected>Gender</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
@@ -74,32 +81,63 @@
                     <div class="row mb-4">
                         <div class="col">
                             <!-- Birthday -->
-                            <label><i class="far fa-calendar"></i> Enter Your Birthday</label>
-                            <Datepicker v-model="date" :config="options"/>
+                            <label
+                                ><i class="far fa-calendar"></i> Enter Your
+                                Birthday</label
+                            >
+                            <Datepicker
+                                v-model="date"
+                                :config="options"
+                            ></Datepicker>
                         </div>
                         <div class="col">
                             <!--  -->
-                            <label><i class="fas fa-user-alt"></i> Pick Profile Picture</label>
+                            <label
+                                ><i class="fas fa-user-alt"></i> Pick Profile
+                                Picture</label
+                            >
                             <div class="custom-file">
                                 <input
                                     type="file"
                                     class="custom-file-input"
                                     id="customFile"
+                                    @change="onFileChange"
                                 />
                                 <label
                                     class="custom-file-label"
                                     for="customFile"
-                                    >Browse Files</label
+                                    >{{ filename || "Browse Files"}}</label
                                 >
                             </div>
                         </div>
                     </div>
 
+                    <div v-show="image">
+                        <vue-croppie
+                            id="croppie"
+                            ref="croppieRef"
+                            resultType="base64"
+                            mouseWheelZoom="ctrl"
+                            :boundary="{width: 'auto', height: 300}"
+                            :viewport="{ width: 200, height: 200, type: 'circle' }"
+                            :enableResize="false"
+                        ></vue-croppie>
+                    </div>
+
                     <div class="row mb-4">
-                        <button class="btn btn-primary btn-block mx-5 mt-3" type="submit" data-dismiss="modal">
-                                Update Details
+                        <button
+                            class="btn btn-primary btn-block mx-5 mt-3"
+                            type="submit"
+                            data-dismiss="modal"
+                        >
+                            Update Details
                         </button>
-                        <button class="btn btn-danger btn-block mx-5 mt-3" v-on:click="logout" type="submit" data-dismiss="modal">
+                        <button
+                            class="btn btn-danger btn-block mx-5 mt-3"
+                            v-on:click="logout"
+                            type="submit"
+                            data-dismiss="modal"
+                        >
                             Log Out
                         </button>
                     </div>
