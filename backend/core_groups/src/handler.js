@@ -565,3 +565,29 @@ exports.create_invite = (env, params, done) => {
         }
     );
 };
+
+exports.get_group_names = (env, params, done) => {
+    const group_ids = params.group_ids || [];
+    const user_id = params.user_id;
+    const projection = { group_id: true, group_info: true };
+    env.groups
+        .find(
+            { group_id: { $in: group_ids }, members: user_id },
+            { projection }
+        )
+        .toArray((err, res) => {
+            if (err) {
+                return done('Something went wrong');
+            }
+
+            const result = res.map(
+                (e) =>
+                    new Object({
+                        group_id: e.group_id,
+                        group_name: e.group_info.name
+                    })
+            );
+
+            return done(null, result);
+        });
+};

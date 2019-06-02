@@ -14,6 +14,7 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
+              data-offset="-100,0"
             >
               <span id="groups_button" class="text-right header-btn">
                 <i class="far fa-bell"></i>
@@ -30,6 +31,7 @@
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
+              data-offset="-100,0"
             >
               <span id="groups_button" class="text-right header-btn">
                 <i class="fas fa-users"></i>

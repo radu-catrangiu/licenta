@@ -63,7 +63,9 @@ const routes = [
 
 const router = new VueRouter({ routes, mode: 'history' });
 
+import store from './store';
 new Vue({
+    store,
     router,
     render: h => h(App)
 }).$mount('#app');

@@ -2,9 +2,9 @@ import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import AccountModal from './components/Modals/AccountModal/AccountModal.vue';
 import OnboardingModal from './components/Modals/OnboardingModal/OnboardingModal.vue';
+import NewGroupModal from './components/Modals/NewGroupModal/NewGroupModal.vue';
 import GroupsModal from './components/Modals/GroupsModal/GroupsModal.vue';
 import GoogleMap from './components/GoogleMap/GoogleMap.vue';
-// import { async, resolve } from 'q';
 
 export default {
     name: 'dashboard',
@@ -13,6 +13,7 @@ export default {
         Footer,
         AccountModal,
         OnboardingModal,
+        NewGroupModal,
         GroupsModal,
         GoogleMap
     },
@@ -20,14 +21,22 @@ export default {
         return {
             map_loaded: false,
             day_index: 0,
-            show_schedule_card: false,
-            user_info: {},
-            group_ids: [],
-            current_group: {},
-            all_venues: Array(7)
+            show_schedule_card: false
         };
     },
     computed: {
+        user_info() {
+            return this.$store.getters.user_info;
+        },
+        group_ids() {
+            return this.$store.getters.group_ids;
+        },
+        current_group() {
+            return this.$store.getters.current_group;
+        },
+        all_venues() {
+            return this.$store.getters.all_venues;
+        },
         locations() {
             let index = this.day_index;
             if (!this.current_group.locations) {
@@ -51,15 +60,19 @@ export default {
             return this.all_venues[index];
         }
     },
-    async mounted() {
+    async created() {
         await this.validate_token(this, null);
-
-        document.title = 'Dashboard | Get Together';
+        
         let res = await get_user_info(this);
         if (res) {
+            await get_group_names(this);
             await retrieve_group_details(this);
             await get_venues_list(this);
         }
+    },
+    async mounted() {
+
+        document.title = 'Dashboard | Get Together';
     },
     updated() {
         // eslint-disable-next-line
@@ -179,8 +192,6 @@ async function get_user_info(self) {
             'get_user_info',
             { user_token },
             (err, res) => {
-                // eslint-disable-next-line
-                console.log(err, res);
                 if (err) {
                     // Do something
                     resolve(false);
@@ -191,10 +202,35 @@ async function get_user_info(self) {
                     show_modal(self, '#onboardingModal', { keyboard: false });
                     resolve(false);
                 } else {
-                    self.group_ids = res.groups;
-                    self.user_info = res;
+                    self.$store.commit('set_group_ids', res.groups);
+                    self.$store.commit('set_user_info', res);
                     resolve(true);
                 }
+            }
+        );
+    });
+}
+
+async function get_group_names(self) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_ids: self.group_ids
+        };
+        self.$http.callAPI(
+            '/core/groups',
+            'get_group_names',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+
+                self.$store.commit('set_groups_list', res);
+                resolve(true);
             }
         );
     });
@@ -212,15 +248,13 @@ async function retrieve_group_details(self) {
             'retrieve_group_details',
             params,
             (err, res) => {
-                // eslint-disable-next-line
-                console.log(err, res);
                 if (err) {
                     // Do something
                     resolve(false);
                     return;
                 }
 
-                self.current_group = res;
+                self.$store.commit('set_current_group', res);
                 resolve(true);
             }
         );
@@ -239,15 +273,13 @@ function get_venues_list(self) {
             'get_venues',
             params,
             (err, res) => {
-                // eslint-disable-next-line
-                console.log(err, res);
                 if (err) {
                     // Do something
                     resolve(false);
                     return;
                 }
 
-                self.all_venues = res;
+                self.$store.commit("set_all_venues", res);
                 resolve(true);
             }
         );
