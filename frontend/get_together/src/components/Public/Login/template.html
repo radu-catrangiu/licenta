@@ -9,9 +9,12 @@
                 height="256"
             />
             <h1 class="h3 mb-1 font-weight-normal">Log In</h1>
-            <p>
+            <div class="my-4" v-if="!error">
                 Enter the up and coming social media platform!
-            </p>
+            </div>
+            <div class="my-4" style="color:red;" v-if="error">
+                    {{error}}
+            </div>
         </div>
 
         <div class="form-label-group">

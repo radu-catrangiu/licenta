@@ -19,9 +19,10 @@ export default {
     },
     data() {
         return {
+            weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             map_loaded: false,
             day_index: 0,
-            show_schedule_card: false
+            show_schedule_section: false
         };
     },
     computed: {

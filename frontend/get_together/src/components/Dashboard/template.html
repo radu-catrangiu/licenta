@@ -1,12 +1,12 @@
 <div>
-  <OnboardingModal/>
-  <GroupsModal :group="current_group"/>
-  <NewGroupModal />
-  <AccountModal/>
-  <div id="dashboard" class="container">
-    <Header/>
-    <!-- Card Start -->
-    <div class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
+    <OnboardingModal> </OnboardingModal>
+    <GroupsModal :group="current_group"> </GroupsModal>
+    <NewGroupModal> </NewGroupModal>
+    <AccountModal> </AccountModal>
+    <div id="dashboard" class="container">
+        <Header></Header>
+        <!-- Card Start -->
+        <!-- <div class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
       <div class="card-body row" style="display: -webkit-box;">
         <div class="col text-left">
           <h2 v-if="!current_group.name">{Group Name}</h2>
@@ -25,160 +25,299 @@
           </div>
         </div>
       </div>
-    </div>
-    <!-- Card End -->
-    <!-- Card Start -->
-    <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-8">
-            <div class="row mb-2">
-              <GoogleMap 
-                ref="google_map" 
-                :locations="locations" 
-                :user="user_info"
-                :venues="venues"
-                :point_to_location_callback="point_to_location_callback"
-              />
-            </div>
-            <div class="row">
-              <div class="col text-center">
-                <div class="btn-group btn-group-toggle">
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 0 }">
-                    <input type="radio" :value="0" v-model="day_index" id="monday" autocomplete="off" checked> Monday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 1 }">
-                    <input type="radio" :value="1" v-model="day_index" id="tuesday" autocomplete="off"> Tuesday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 2 }">
-                    <input type="radio" :value="2" v-model="day_index" id="wednesday" autocomplete="off"> Wednesday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 3 }">
-                    <input type="radio" :value="3" v-model="day_index" id="thursday" autocomplete="off"> Thurday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 4 }">
-                    <input type="radio" :value="4" v-model="day_index" id="friday" autocomplete="off"> Friday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 5 }">
-                    <input type="radio" :value="5" v-model="day_index" id="saturday" autocomplete="off"> Saturday
-                  </label>
-                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 6 }">
-                    <input type="radio" :value="6" v-model="day_index"  id="sunday" autocomplete="off"> Sunday
-                  </label>
-                </div>
-              </div>
-            </div>
-            <!-- <div class="row mx-auto">
-              <button 
-                class="btn btn-info" 
-                data-toggle="button" 
-                aria-pressed="false"  
-                v-on:click="show_schedule_card = !show_schedule_card">
-                Enter schedule
-              </button>
-              <button class="btn btn-primary ml-2" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
-            </div> -->
-            
-          </div>
-          <div class="col-4 overflow-auto" id="venues_list" style="height: 55vh;" v-if="map_loaded && venues && venues.length > 0">
-            <div class="row ml-2 my-2" v-for="venue in venues" style="min-width: 100%;">
-                
-                    <li class="list-group-item" :id="venue.id">
-                        <div class="container">
-                          
-                            <div class="row">
-                                <img class="mx-2" :src="venue.icon" height="24" width="24" />
-                                <h5>{{venue.name}}</h5>
-                              </div>
-                            
-                                <div>
-                                  User ratings: {{venue.user_ratings_total || 0}}
-                                </div>
-                                <div>
-                                  Rating: {{venue.rating || 0}}
-                                </div>
-                              
-                          
-                              <div>{{venue.vicinity}}</div>
-                              <div>
-                                <span v-if="!venue.opening_hours" class="badge badge-pill badge-info">Unknown schedule</span>
-                                <span v-if="venue.opening_hours && venue.opening_hours.open_now" class="badge badge-pill badge-success">Open Now</span>
-                                <span v-if="venue.opening_hours && !venue.opening_hours.open_now" class="badge badge-pill badge-danger">Closed Now</span>
-                              </div>
-
-                          
-                        </div>
-                      </li>
-
-            </div>
-          </div>
-          <div v-else>
-            No venues
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Card End -->
-    <!-- Card Start -->
-    <div v-if="show_schedule_card" class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
-      <div class="card-body">
-        <button class="btn btn-warning mr-2" v-on:click="get_browser_location">Get Browser Location</button>
-        <button class="btn btn-success mr-2" v-on:click="get_point_location">Point to location</button>
-        <button class="btn btn-danger" v-on:click="delete_location">Delete location for selected day</button>
-      </div>
-    </div>
-    <!-- Card End -->
-
-    <!-- Card Start -->
-      <!--
-    <div v-if="map_loaded && venues && venues.length > 0" class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
-      <div class="card-title text-center mt-2">
-        <h3>Venues</h3>
-      </div>
-      <div class="card-body">
-        <ul class="list-group">
-          <div class="row">
-            <div class="col-sm-6 py-2" v-for="venue in venues">
-                <li class="list-group-item" :id="venue.id">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col">
-                          <div class="row">
-                            <img class="mx-2" :src="venue.icon" height="24" width="24" />
-                            <h5>{{venue.name}}</h5>
-                          </div>
-                        </div>
-                        <div class="col-xs text-right">
-                            <div>
-                              User ratings: {{venue.user_ratings_total || 0}}
-                            </div>
-                            <div>
-                              Rating: {{venue.rating || 0}}
-                            </div>
-                          </div>
-                      </div>
-                      <div class="row">
-                        <div class="col">
-                          <div>{{venue.vicinity}}</div>
-                          <div>
-                            <span v-if="!venue.opening_hours" class="badge badge-pill badge-info">Unknown schedule</span>
-                            <span v-if="venue.opening_hours && venue.opening_hours.open_now" class="badge badge-pill badge-success">Open Now</span>
-                            <span v-if="venue.opening_hours && !venue.opening_hours.open_now" class="badge badge-pill badge-danger">Closed Now</span>
-                          </div>
-                          
-                        </div>
-                        
-                      </div>
+    </div> -->
+        <!-- Card End -->
+        <!-- Card Start -->
+        <div
+            id="map_card"
+            class="card shadow my-4 rounded-lg border border-white"
+        >
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md">
+                        <h4 v-if="!current_group.name">{Group Name}</h4>
+                        <h4 v-else>{{ current_group.name }}</h4>
                     </div>
-                  </li>
+                    <div class="col-md">
+                        <div class="row text-right float-right">
+                            <button
+                                class="btn btn-info mx-2"
+                                data-toggle="button"
+                                aria-pressed="false"
+                                v-on:click="show_schedule_section = !show_schedule_section"
+                            >
+                                Group Actions
+                            </button>
+
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-secondary dropdown-toggle"
+                                    type="button"
+                                    id="dropdownMenuButton"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                >
+                                    {{ weekdays[day_index] }}
+                                </button>
+                                <div
+                                    class="dropdown-menu"
+                                    aria-labelledby="dropdownMenuButton"
+                                >
+                                    <a
+                                        v-for="(day, day_idx) in weekdays"
+                                        v-on:click="day_index = day_idx"
+                                        :selected="day_index === day_idx"
+                                        class="dropdown-item"
+                                        href="#"
+                                        >{{ day }}</a
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          
-        </ul>
-      </div>
+            <div class="card-header" v-if="show_schedule_section">
+                <button
+                    class="btn btn-warning mr-2"
+                    v-on:click="get_browser_location"
+                >
+                    Get Browser Location
+                </button>
+                <button
+                    class="btn btn-success mr-2"
+                    v-on:click="get_point_location"
+                >
+                    Point to location
+                </button>
+                <button class="btn btn-danger" v-on:click="delete_location">
+                    Delete location for selected day
+                </button>
+                <button
+                    class="btn btn-primary mx-2"
+                    v-on:click="open_groups_mgmt"
+                >
+                    Mgmt
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8 mb-3 mb-md-0">
+                        <GoogleMap
+                            ref="google_map"
+                            :locations="locations"
+                            :user="user_info"
+                            :venues="venues"
+                            :point_to_location_callback="point_to_location_callback"
+                        ></GoogleMap>
+                    </div>
+                    <div
+                        class="col-md-4 overflow-auto"
+                        id="venues_list"
+                        style="height: 50vh;"
+                        v-if="map_loaded && venues && venues.length > 0"
+                    >
+                        <div class="row" v-for="venue in venues">
+                            <li
+                                class="list-group-item mb-2"
+                                :id="venue.id"
+                                style="width: 100%;"
+                            >
+                                <div class="container">
+                                    <div class="row">
+                                        <img
+                                            class="mx-2"
+                                            :src="venue.icon"
+                                            height="24"
+                                            width="24"
+                                        />
+                                        <h5>{{ venue.name }}</h5>
+                                    </div>
+
+                                    <div>
+                                        User ratings:
+                                        {{ venue.user_ratings_total || 0 }}
+                                    </div>
+
+                                    <div>Rating: {{ venue.rating || 0 }}</div>
+
+                                    <div>{{ venue.vicinity }}</div>
+
+                                    <div>
+                                        <span
+                                            v-if="!venue.opening_hours"
+                                            class="badge badge-pill badge-info"
+                                            >Unknown schedule</span
+                                        >
+                                        <span
+                                            v-if="venue.opening_hours && venue.opening_hours.open_now"
+                                            class="badge badge-pill badge-success"
+                                            >Open Now</span
+                                        >
+                                        <span
+                                            v-if="venue.opening_hours && !venue.opening_hours.open_now"
+                                            class="badge badge-pill badge-danger"
+                                            >Closed Now</span
+                                        >
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </div>
+                    <div v-else>
+                        No venues
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div v-if="!current_group.members">
+                    <h2>{Member Icons}</h2>
+                </div>
+                <div v-else class="testimonial-group">
+                    <div class="row justify-content-end pr-3">
+                        <div
+                            class="col-xs-1 ml-2 circle"
+                            v-for="member in current_group.members"
+                            :key="member.username"
+                        >
+                            <div
+                                data-toggle="tooltip"
+                                data-placement="left"
+                                :title="member.username"
+                            >
+                                {{ member.username | initial }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card End -->
+
+        <!-- Card Start -->
+
+        <div
+            class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white"
+        >
+            <div class="card-title text-center mt-2">
+                <h3>Comments</h3>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Join the conversation"
+                                aria-label="Join the conversation"
+                            />
+                            <div class="input-group-append">
+                                <button class="btn btn-warning" type="button">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml-2" style="color: gray;">0/255</div>
+                    </div>
+
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img
+                                        src="https://image.ibb.co/jw55Ex/def_face.jpg"
+                                        class="img img-rounded img-fluid"
+                                    />
+                                    <p class="text-secondary text-center">
+                                        15 Minutes Ago
+                                    </p>
+                                </div>
+                                <div class="col-md-10">
+                                    <p>
+                                        <a class="float-left" href="#"
+                                            ><strong>carol</strong></a
+                                        >
+                                    </p>
+                                    <div class="clearfix"></div>
+                                    <p>
+                                        Lorem Ipsum is simply dummy text of the
+                                        pr make but also the leap into
+                                        electronic typesetting, remaining
+                                        essentially unchanged. It was
+                                        popularised in the 1960s with the
+                                        release of Letraset sheets containing
+                                        Lorem Ipsum passages, and more recently
+                                        with de.
+                                    </p>
+                                    <p>
+                                        <a
+                                            class="float-right btn btn-outline-primary ml-2"
+                                        >
+                                            <i class="fa fa-reply"></i> Reply</a
+                                        >
+                                        <a
+                                            class="float-right btn text-white btn-danger"
+                                        >
+                                            <i class="fa fa-heart"></i> Like</a
+                                        >
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card my-2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img
+                                        src="https://image.ibb.co/jw55Ex/def_face.jpg"
+                                        class="img img-rounded img-fluid"
+                                    />
+                                    <p class="text-secondary text-center">
+                                        15 Minutes Ago
+                                    </p>
+                                </div>
+                                <div class="col-md-10">
+                                    <p>
+                                        <a class="float-left" href="#"
+                                            ><strong>radu</strong></a
+                                        >
+                                    </p>
+                                    <div class="clearfix"></div>
+                                    <p>
+                                        Lorem Ipsum is simply dummy text of the
+                                        pr make but also the leap into
+                                        electronic typesetting, remaining
+                                        essentially unchanged. It was
+                                        popularised in the 1960s with the
+                                        release of Letraset sheets containing
+                                        Lorem Ipsum passages, and more recently
+                                        with.
+                                    </p>
+                                    <p>
+                                        <a
+                                            class="float-right btn btn-outline-primary ml-2"
+                                        >
+                                            <i class="fa fa-reply"></i> Reply</a
+                                        >
+                                        <a
+                                            class="float-right btn text-white btn-danger"
+                                        >
+                                            <i class="fa fa-heart"></i> Like</a
+                                        >
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card End -->
+        <Footer></Footer>
     </div>
-    -->
-    <!-- Card End -->
-    <Footer/>
-  </div>
 </div>

@@ -4,7 +4,8 @@ export default {
         return {
             username: '',
             password: '',
-            rememberMe: false
+            rememberMe: false,
+            error: null
         };
     },
     methods: {
@@ -41,6 +42,7 @@ function loginAccount(self) {
     self.$http.callAPI('/core/users', 'login', params, (err, res) => {
         if (err) {
             console.log(err, res);
+            self.error = err;
             return;
         }
         self.$cookie.set('user_token', res.user_token);

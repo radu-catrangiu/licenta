@@ -1,56 +1,54 @@
 <template>
-  <div>
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <img id="logo" src="../../../assets/logo5.svg" alt>
+  <div class="container">
+    <div class="row">
+      <div class="col-md">
+        <img id="logo" src="../../../assets/logo.svg" alt>
+        <img id="logo" src="../../../assets/text-logo.svg" alt>
+      </div>
+      <div class="col-md text-right">
+        <div class="btn-group ml-4">
+          <a
+            href="#"
+            role="button"
+            id="notificationsDropdownLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-offset="-100,0"
+          >
+            <span id="groups_button" class="text-right header-btn">
+              <i class="far fa-bell"></i>
+              <!-- Groups -->
+            </span>
+          </a>
+          <notifications-dropdown/>
         </div>
-        <div class="col text-right mt-4">
-          <div class="btn-group mx-4">
-            <a
-              href="#"
-              role="button"
-              id="notificationsDropdownLink"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              data-offset="-100,0"
-            >
-              <span id="groups_button" class="text-right header-btn">
-                <i class="far fa-bell"></i>
-              </span>
-            </a>
-            <notifications-dropdown/>
-          </div>
 
-          <div class="btn-group mx-4">
-            <a
-              href="#"
-              role="button"
-              id="groupsDropdownLink"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              data-offset="-100,0"
-            >
-              <span id="groups_button" class="text-right header-btn">
-                <i class="fas fa-users"></i>
-              </span>
-            </a>
-            <groups-dropdown/>
-          </div>
-          <div class="btn-group ml-4">
+        <div class="btn-group ml-4">
+          <a
+            href="#"
+            role="button"
+            id="groupsDropdownLink"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-offset="-100,0"
+          >
+            <span id="groups_button" class="text-right header-btn">
+              <i class="fas fa-users"></i>
+            </span>
+          </a>
+          <groups-dropdown/>
+        </div>
+        <div class="btn-group ml-4">
           <a href="#" v-on:click="openModal('#accountModal')">
             <span id="account_button" class="text-right header-btn">
               <i class="fas fa-user-circle"></i>
             </span>
           </a>
-          </div>
         </div>
       </div>
     </div>
-
-    <p class="text-right"></p>
   </div>
 </template>
 
@@ -79,8 +77,7 @@ export default {
 #logo {
   margin: auto;
   /* margin-left: 50%; */
-  height: 150px;
-  width: 150px;
+  height: 40px;
 }
 
 .header-btn:hover {
@@ -88,7 +85,8 @@ export default {
 }
 
 .header-btn {
-  font-size: 4.5em;
+  padding-top: 20px;
+  font-size: 1.7em;
   color: black;
 }
 </style>
