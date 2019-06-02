@@ -30,50 +30,90 @@
     <!-- Card Start -->
     <div id="map_card" class="card shadow mb-4 rounded-lg border border-white">
       <div class="card-body">
-        <div class="row mb-2">
-          <GoogleMap 
-            ref="google_map" 
-            :locations="locations" 
-            :user="user_info"
-            :venues="venues"
-            :point_to_location_callback="point_to_location_callback"
-          />
-        </div>
         <div class="row">
-          <div class="col">
-            <div class="btn-group btn-group-toggle">
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 0 }">
-                <input type="radio" :value="0" v-model="day_index" id="monday" autocomplete="off" checked> Monday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 1 }">
-                <input type="radio" :value="1" v-model="day_index" id="tuesday" autocomplete="off"> Tuesday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 2 }">
-                <input type="radio" :value="2" v-model="day_index" id="wednesday" autocomplete="off"> Wednesday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 3 }">
-                <input type="radio" :value="3" v-model="day_index" id="thursday" autocomplete="off"> Thurday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 4 }">
-                <input type="radio" :value="4" v-model="day_index" id="friday" autocomplete="off"> Friday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 5 }">
-                <input type="radio" :value="5" v-model="day_index" id="saturday" autocomplete="off"> Saturday
-              </label>
-              <label class="btn btn-secondary" v-bind:class="{ active: day_index === 6 }">
-                <input type="radio" :value="6" v-model="day_index"  id="sunday" autocomplete="off"> Sunday
-              </label>
+          <div class="col-8">
+            <div class="row mb-2">
+              <GoogleMap 
+                ref="google_map" 
+                :locations="locations" 
+                :user="user_info"
+                :venues="venues"
+                :point_to_location_callback="point_to_location_callback"
+              />
+            </div>
+            <div class="row">
+              <div class="col text-center">
+                <div class="btn-group btn-group-toggle">
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 0 }">
+                    <input type="radio" :value="0" v-model="day_index" id="monday" autocomplete="off" checked> Monday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 1 }">
+                    <input type="radio" :value="1" v-model="day_index" id="tuesday" autocomplete="off"> Tuesday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 2 }">
+                    <input type="radio" :value="2" v-model="day_index" id="wednesday" autocomplete="off"> Wednesday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 3 }">
+                    <input type="radio" :value="3" v-model="day_index" id="thursday" autocomplete="off"> Thurday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 4 }">
+                    <input type="radio" :value="4" v-model="day_index" id="friday" autocomplete="off"> Friday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 5 }">
+                    <input type="radio" :value="5" v-model="day_index" id="saturday" autocomplete="off"> Saturday
+                  </label>
+                  <label class="btn btn-secondary" v-bind:class="{ active: day_index === 6 }">
+                    <input type="radio" :value="6" v-model="day_index"  id="sunday" autocomplete="off"> Sunday
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="row mx-auto">
+              <button 
+                class="btn btn-info" 
+                data-toggle="button" 
+                aria-pressed="false"  
+                v-on:click="show_schedule_card = !show_schedule_card">
+                Enter schedule
+              </button>
+              <button class="btn btn-primary ml-2" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
+            </div> -->
+            
+          </div>
+          <div class="col-4 overflow-auto" id="venues_list" style="height: 55vh;" v-if="map_loaded && venues && venues.length > 0">
+            <div class="row ml-2 my-2" v-for="venue in venues" style="min-width: 100%;">
+                
+                    <li class="list-group-item" :id="venue.id">
+                        <div class="container">
+                          
+                            <div class="row">
+                                <img class="mx-2" :src="venue.icon" height="24" width="24" />
+                                <h5>{{venue.name}}</h5>
+                              </div>
+                            
+                                <div>
+                                  User ratings: {{venue.user_ratings_total || 0}}
+                                </div>
+                                <div>
+                                  Rating: {{venue.rating || 0}}
+                                </div>
+                              
+                          
+                              <div>{{venue.vicinity}}</div>
+                              <div>
+                                <span v-if="!venue.opening_hours" class="badge badge-pill badge-info">Unknown schedule</span>
+                                <span v-if="venue.opening_hours && venue.opening_hours.open_now" class="badge badge-pill badge-success">Open Now</span>
+                                <span v-if="venue.opening_hours && !venue.opening_hours.open_now" class="badge badge-pill badge-danger">Closed Now</span>
+                              </div>
+
+                          
+                        </div>
+                      </li>
+
             </div>
           </div>
-          <div class="col text-right">
-            <button 
-              class="btn btn-info" 
-              data-toggle="button" 
-              aria-pressed="false"  
-              v-on:click="show_schedule_card = !show_schedule_card">
-              Enter schedule
-            </button>
-            <button class="btn btn-primary ml-2" v-on:click="open_groups_mgmt">Open Group Management Modal</button>
+          <div v-else>
+            No venues
           </div>
         </div>
       </div>
@@ -88,7 +128,9 @@
       </div>
     </div>
     <!-- Card End -->
+
     <!-- Card Start -->
+      <!--
     <div v-if="map_loaded && venues && venues.length > 0" class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white">
       <div class="card-title text-center mt-2">
         <h3>Venues</h3>
@@ -135,6 +177,7 @@
         </ul>
       </div>
     </div>
+    -->
     <!-- Card End -->
     <Footer/>
   </div>

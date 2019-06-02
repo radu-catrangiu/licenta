@@ -43,8 +43,7 @@
 export default {
   data() {
     return {
-      join_link: "",
-      single_use: false
+      group_name: ""
     };
   },
   mounted() {

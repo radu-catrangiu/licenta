@@ -154,20 +154,24 @@ export default {
         },
         venue_clicked(venue) {
             const elem = this.$('#' + venue.id);
+            const container = this.$('#venues_list');
             if (elem.length == 0 || !this.map_loaded) {
                 return;
             }
-
+            
             elem.addClass('clicked');
-            this.$([document.documentElement, document.body]).animate(
+            container.animate(
                 {
-                    scrollTop: elem.offset().top
+                    scrollTop: elem.offset().top - container.offset().top + container.scrollTop()
                 },
                 500,
                 () => {
+                    container.scrollTop(
+                        elem.offset().top - container.offset().top + container.scrollTop()
+                    );
                     setTimeout(function() {
                         elem.removeClass('clicked');
-                    }, 1000);
+                    }, 1000, 'swing');
                 }
             );
         }
