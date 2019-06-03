@@ -11,3 +11,7 @@ exports.get_user_info = (env, params, done) => {
         return done(null, res);
     });
 };
+
+exports.update_user_info = (env, params, done) => {
+    
+}

@@ -5,6 +5,7 @@ import OnboardingModal from './components/Modals/OnboardingModal/OnboardingModal
 import NewGroupModal from './components/Modals/NewGroupModal/NewGroupModal.vue';
 import GroupsModal from './components/Modals/GroupsModal/GroupsModal.vue';
 import GoogleMap from './components/GoogleMap/GoogleMap.vue';
+import CommentsSection from './components/CommentsSection/CommentsSection.vue';
 
 export default {
     name: 'dashboard',
@@ -15,7 +16,8 @@ export default {
         OnboardingModal,
         NewGroupModal,
         GroupsModal,
-        GoogleMap
+        GoogleMap,
+        CommentsSection
     },
     data() {
         return {
