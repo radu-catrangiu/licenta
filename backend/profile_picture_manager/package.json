@@ -1,0 +1,22 @@
+{
+  "name": "profile_picture_manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "formidable": "^1.2.1",
+    "mongodb": "^3.2.6",
+    "mqtt": "^3.0.0",
+    "request": "^2.88.0",
+    "uuid": "^3.3.2"
+  }
+}
