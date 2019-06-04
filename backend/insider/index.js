@@ -63,13 +63,34 @@ mqtt_client.on('message', function(topic, message) {
     add_service(message.name, address, message.service);
 });
 
+app.get('/profile_picture/*', cors(), function(req, res) {
+    const service = services['/profile_picture/*'];
+    const url = service.address;
+    const path = req.url;
+    const pipe = req.pipe(request(url + path));
+
+    pipe.on('error', (err) => {
+        console.error(req.baseUrl, ' : ', err.message);
+        try {
+            clearTimeout(service.expiry);
+            delete service;
+        } catch (error) {
+            console.error(req.baseUrl, ' : ', error.message);
+        }
+        res.sendStatus(404);
+    });
+    pipe.on('response', () => {
+        pipe.pipe(res);
+    });
+});
+
 app.use('*', cors(), function(req, res) {
     if (services[req.baseUrl]) {
         const url = services[req.baseUrl].address;
         const path = services[req.baseUrl].path;
         const pipe = req.pipe(request(url + path));
 
-        pipe.on('error', err => {
+        pipe.on('error', (err) => {
             console.error(req.baseUrl, ' : ', err.message);
             try {
                 clearTimeout(services[req.baseUrl].expiry);
@@ -88,7 +109,7 @@ app.use('*', cors(), function(req, res) {
 });
 
 const port = process.env.PORT || 8089;
-app.listen(port, err => {
+app.listen(port, (err) => {
     if (!err) {
         console.log(`Insider listening on port ${port}`);
     }
