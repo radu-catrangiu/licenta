@@ -42,11 +42,14 @@ function init(config, callback) {
             if (indexes[name]) {
                 for (let key in indexes[name]) {
                     const obj = {};
+                    const opts = { unique: true, background: true };
                     obj[key] = indexes[name][key];
-                    db.collection(name).createIndex(obj, {
-                        unique: true,
-                        background: true
-                    });
+                    const check = Math.abs(obj[key]);
+                    if (check === 2) {
+                        obj[key] /= check;
+                        delete opts['unique'];
+                    }
+                    db.collection(name).createIndex(obj, opts);
                 }
             }
         });
