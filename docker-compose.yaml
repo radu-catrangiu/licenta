@@ -145,8 +145,30 @@ services:
       MQTT_BROKER: mqtt://broker/
       ANNOUNCE_INTERVAL: 300000
 
+  profile-picture-manager:
+    build:
+      context: ./backend/profile_picture_manager/
+      dockerfile: Dockerfile
+    container_name: profile-picture-manager
+    networks: 
+      - net
+    depends_on:
+      - mongo
+      - broker
+    environment:
+      MONGO_HOST: database
+      MONGO_USER: root
+      MONGO_PASS: example
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
+      INSIDER_URL: http://insider:8089
+    volumes:
+      - profile_pictures_storage:/usr/src/app/pictures
+
 volumes:
   db_persistence:
+  profile_pictures_storage:
+  
 
 networks: 
   net:
