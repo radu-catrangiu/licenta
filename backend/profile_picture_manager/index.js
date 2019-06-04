@@ -75,7 +75,7 @@ app.post('/upload/picture', cors(), (req, res) => {
                 if (err) {
                     return res.sendStatus(500);
                 }
-                return res.status(200).end(JSON.stringify({ picture_id }));
+                return res.send(JSON.stringify({ picture_id }));
             });
         });
     });
@@ -126,6 +126,7 @@ async.waterfall([
     app.listen(config.port, () => {
         console.log('Server started');
         announcer.init('profile_picture_manager', config.port, '/upload/picture');
+        announcer.init('profile_picture_manager', config.port, '/profile_picture/*');
     });
 });
 
