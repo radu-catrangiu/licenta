@@ -10,7 +10,7 @@
                     <input type="text" class="form-control" placeholder="Join the conversation"
                         aria-label="Join the conversation" v-model="new_comment" :maxlength="255" />
                     <div class="input-group-append">
-                        <button class="btn btn-warning" type="button">
+                        <button class="btn btn-warning" type="button" v-on:click="add_comment">
                             Send
                         </button>
                     </div>
