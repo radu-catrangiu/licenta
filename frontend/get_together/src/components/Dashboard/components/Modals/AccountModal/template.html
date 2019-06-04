@@ -29,10 +29,13 @@
                 <div class="modal-body bg-light">
                     <div class="row mb-4">
                         <div class="col"></div>
-                        <div class="col text-center">
+                        <div class="col text-center" v-if="old_profile_picture_id.length === 0">
                             <span style="font-size: 3em; color: gray;">
                                 <i class="fas fa-user-circle"></i>
                             </span>
+                        </div>
+                        <div class="col text-center" v-else>
+                            <img :src="profile_pic_url"/>
                         </div>
                         <div class="col"></div>
                     </div>
@@ -43,7 +46,7 @@
                                 <input
                                     type="firstname"
                                     id="inputFirstname"
-                                    class="form-control is-valid"
+                                    class="form-control"
                                     placeholder="Firstname"
                                     required
                                     autofocus
@@ -58,7 +61,7 @@
                                 <input
                                     type="lastname"
                                     id="inputLastname"
-                                    class="form-control is-valid"
+                                    class="form-control"
                                     placeholder="Lastname"
                                     required
                                     autofocus
@@ -70,11 +73,12 @@
                         <div class="col">
                             <!-- Gender -->
                             <select
-                                class="form-label-group custom-select custom-select-lg mb-3 is-valid"
+                                class="form-label-group custom-select custom-select-lg mb-3"
+                                v-model="gender"
                             >
-                                <option selected>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="unspecified" selected>Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
                             </select>
                         </div>
                     </div>
@@ -86,7 +90,7 @@
                                 Birthday</label
                             >
                             <Datepicker
-                                v-model="date"
+                                v-model="birthdate"
                                 :config="options"
                             ></Datepicker>
                         </div>
@@ -128,7 +132,7 @@
                         <button
                             class="btn btn-primary btn-block mx-5 mt-3"
                             type="submit"
-                            data-dismiss="modal"
+                            v-on:click="update"
                         >
                             Update Details
                         </button>
