@@ -42,6 +42,9 @@ const store = new Vuex.Store({
         current_group(state) {
             return state.current_group;
         },
+        current_group_id(state) {
+            return state.current_group.group_id;
+        },
         all_venues(state) {
             return state.all_venues;
         }

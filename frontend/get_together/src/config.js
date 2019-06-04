@@ -15,4 +15,6 @@ if (process.env.NODE_ENV === "production") {
   };
 }
 
+config.comments_batch = 5;
+
 export { config }

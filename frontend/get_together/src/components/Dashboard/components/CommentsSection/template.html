@@ -1,19 +1,14 @@
 <div>
     <div class="card-title text-center mt-2">
-        <h3>Comments</h3>
+        <h3>Comments <span class="badge badge-secondary">{{comments_count}}</span></h3>
     </div>
     <div class="card-body">
         <div class="container">
             <div class="mb-3">
+
                 <div class="input-group">
-                    <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Join the conversation"
-                        aria-label="Join the conversation"
-                        v-model="new_comment"
-                        :maxlength="255"
-                    />
+                    <input type="text" class="form-control" placeholder="Join the conversation"
+                        aria-label="Join the conversation" v-model="new_comment" :maxlength="255" />
                     <div class="input-group-append">
                         <button class="btn btn-warning" type="button">
                             Send
@@ -23,93 +18,55 @@
                 <div class="ml-2" style="color: gray;">{{new_comment.length}}/255</div>
             </div>
 
-            <div class="card my-2">
+            <!-- <div class="text-center mb-3">
+                <a class="btn btn-outline-danger" :class="{ 'disabled' : page === 1}" v-on:click="prev_page">Prev</a>
+                <span class="btn btn-danger mx-2">{{page}}</span>
+                <a class="btn btn-outline-danger" :class="{ 'disabled' : page === pages}"
+                    v-on:click="next_page">Next</a>
+            </div> -->
+
+            <div v-for="comment in current_comments_page" class="card my-2">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
-                            <img
-                                src="../../../../assets/user_default.png"
-                                class="img img-rounded img-fluid"
-                            />
+                            <img src="../../../../assets/user_default.png" class="img img-rounded img-fluid" />
                             <p class="text-secondary text-center">
                                 15 Minutes Ago
                             </p>
                         </div>
                         <div class="col-md-10">
                             <p>
-                                <a class="float-left" href="#"
-                                    ><strong>carol</strong></a
-                                >
+                                <a class="float-left" href="#"><strong>{{comment.user.username}}</strong></a>
                             </p>
                             <div class="clearfix"></div>
                             <p>
-                                Lorem Ipsum is simply dummy text of the pr make
-                                but also the leap into electronic typesetting,
-                                remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of
-                                Letraset sheets containing Lorem Ipsum passages,
-                                and more recently with de.
+                                {{comment.content}}
                             </p>
                             <p>
-                                <a
-                                    class="float-right btn btn-outline-primary ml-2"
-                                >
-                                    <i class="fa fa-reply"></i> Reply</a
-                                >
-                                <a
-                                    class="float-right btn text-white btn-danger"
-                                >
-                                    <i class="fa fa-heart"></i> Like</a
-                                >
+                                <a class="float-right btn btn-outline-primary ml-2">
+                                    <i class="fa fa-reply"></i> Reply</a>
+                                <a class="float-right btn text-white btn-danger">
+                                    <i class="fa fa-heart"></i> Like</a>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card my-2">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-2">
-                            <img
-                                src="../../../../assets/user_default.png"
-                                class="img img-rounded img-fluid"
-                            />
-                            <p class="text-secondary text-center">
-                                32 Minutes Ago
-                            </p>
-                        </div>
-                        <div class="col-md-10">
-                            <p>
-                                <a class="float-left" href="#"
-                                    ><strong>radu</strong></a
-                                >
-                            </p>
-                            <div class="clearfix"></div>
-                            <p>
-                                Lorem Ipsum is simply dummy text of the pr make
-                                but also the leap into electronic typesetting,
-                                remaining essentially unchanged. It was
-                                popularised in the 1960s with the release of
-                                Letraset sheets containing Lorem Ipsum passages,
-                                and more recently with.
-                            </p>
-                            <p>
-                                <a
-                                    class="float-right btn btn-outline-primary ml-2"
-                                >
-                                    <i class="fa fa-reply"></i> Reply</a
-                                >
-                                <a
-                                    class="float-right btn text-white btn-danger"
-                                >
-                                    <i class="fa fa-heart"></i> Like</a
-                                >
-                            </p>
-                        </div>
-                    </div>
+            <div v-if="pages > 0">
+                <div class="text-center mb-3">
+                    <a class="btn btn-outline-danger" :class="{ 'disabled' : page === 1}"
+                        v-on:click="prev_page">Prev</a>
+                    <span class="btn btn-danger mx-2">{{page}}</span>
+                    <a class="btn btn-outline-danger" :class="{ 'disabled' : page === pages}"
+                        v-on:click="next_page">Next</a>
                 </div>
             </div>
+
+            <div v-else>
+                No comments
+            </div>
+
         </div>
     </div>
 </div>
