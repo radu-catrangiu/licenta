@@ -41,9 +41,21 @@ Vue.prototype.$http.callAPI = async (service, method, params, callback) => {
 import VueGeolocation from 'vue-browser-geolocation';
 import VueRouter from 'vue-router';
 import VueCookie from 'vue-cookie';
+import VueSocketIO from 'vue-socket.io';
 Vue.use(VueGeolocation);
 Vue.use(VueRouter);
 Vue.use(VueCookie);
+Vue.use(new VueSocketIO({
+    debug: true,
+    connection: config.push_server,
+    vuex: {
+        store,
+        actionPrefix: 'SOCKET_',
+        mutationPrefix: 'SOCKET_'
+    },
+    options: { autoConnect: false } //Optional options
+}))
+
 
 Vue.config.productionTip = false;
 

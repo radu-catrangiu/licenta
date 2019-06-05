@@ -19,6 +19,20 @@ export default {
         GoogleMap,
         CommentsSection
     },
+    sockets: {
+        connect: function () {
+            console.log('socket connected', this.$socket)
+        },
+        disconnect: function () {
+            console.log('socket disconnected');
+        },
+        update_comments: function (data) {
+            console.log('update_comments', data);
+        },
+        update_notifications: function (data) {
+            console.log('update_notifications', data);
+        }
+    },
     data() {
         return {
             weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -76,6 +90,7 @@ export default {
     async mounted() {
 
         document.title = 'Dashboard | Get Together';
+        this.$socket.open();
     },
     updated() {
         // eslint-disable-next-line

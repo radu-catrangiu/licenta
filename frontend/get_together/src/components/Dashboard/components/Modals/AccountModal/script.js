@@ -91,6 +91,7 @@ export default {
 
         },
         logout() {
+            this.$socket.close();
             this.$cookie.delete('group_id');
             this.$cookie.delete('user_token');
             this.$router.push('/');
