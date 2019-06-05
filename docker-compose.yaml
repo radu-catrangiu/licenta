@@ -183,6 +183,13 @@ services:
     volumes:
       - profile_pictures_storage:/usr/src/app/pictures
 
+  redis-push:
+    image: redis
+    container_name: redis-push
+    expose:
+      - 6379
+
+
 volumes:
   db_persistence:
   profile_pictures_storage:
