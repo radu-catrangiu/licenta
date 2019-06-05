@@ -55,10 +55,10 @@
 
             <div v-if="pages > 0">
                 <div class="text-center mb-3">
-                    <a class="btn btn-outline-danger" :class="{ 'disabled' : page === 1}"
+                    <a style="color: white;" class="btn btn-danger" :class="{ 'disabled' : page === 1}"
                         v-on:click="prev_page">Prev</a>
-                    <span class="btn btn-danger mx-2">{{page}}</span>
-                    <a class="btn btn-outline-danger" :class="{ 'disabled' : page === pages}"
+                    <span class="btn btn-danger mx-2">{{page}} / {{pages}}</span>
+                    <a style="color: white;" class="btn btn-danger" :class="{ 'disabled' : page === pages}"
                         v-on:click="next_page">Next</a>
                 </div>
             </div>
