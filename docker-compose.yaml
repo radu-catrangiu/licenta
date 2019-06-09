@@ -128,6 +128,7 @@ services:
       MONGO_USER: root
       MONGO_PASS: example
       MQTT_BROKER: mqtt://broker/
+      PUSH_MQTT_BROKER: mqtt://push-broker/
       ANNOUNCE_INTERVAL: 5000
       INSIDER_URL: http://insider:8089
 
@@ -217,9 +218,9 @@ services:
     image: rediscommander/redis-commander:latest
     restart: always
     environment:
-    - REDIS_HOSTS=redis-push
+      - REDIS_HOSTS=redis-push
     ports:
-    - 9002:8081
+      - 9002:8081
     networks:
       - net
 
@@ -233,6 +234,8 @@ services:
     depends_on:
       - redis-push
       - push-broker
+    ports:
+      - 6969:6969
     environment:
       REDIS_HOST: redis-push
       REDIS_PASS: password
@@ -240,6 +243,7 @@ services:
       PUSH_MQTT_BROKER: mqtt://push-broker/
       PORT: 6969
       MQTT_BROKER: mqtt://broker/
+      INSIDER_URL: http://insider:8089
       ANNOUNCE_INTERVAL: 5000
 
 volumes:

@@ -164,3 +164,8 @@ exports.dislike = (env, params, done) => {
         return done(null, { status: 'ok' });
     });
 }
+
+exports.test = (env, params, done) => {
+    env.push(params.user_id, 'update_notifications', params);
+    done(null, params);
+}
