@@ -21,7 +21,7 @@
             <div v-for="comment in current_comments_page" class="card my-2">
                 <div class="card-body" :id="comment.comment_id">
                     <div class="row">
-                        <div class="col-md-2">
+                        <div class="col-md-2 text-center">
                             <img v-if="comment && comment.user && comment.user.profile_picture_id" :src="comment.user.profile_picture_id" class="img img-rounded img-fluid"/>
                             <img v-else src="../../../../assets/user_default.png" class="img img-rounded img-fluid" />
                             <p class="text-secondary text-center">
@@ -29,14 +29,19 @@
                             </p>
                         </div>
                         <div class="col-md-10">
-                            <p v-if="comment && comment.user">
+                            <p class="mt-3" v-if="comment && comment.user">
                                 <a class="float-left" :href="'#' + comment.comment_id"><strong>{{comment.user.username}}</strong></a>
                             </p>
                             <div class="clearfix"></div>
-                            <p>
+                            <p class="mt-2">
                                 <span v-html="filter_reply(comment.content)"></span>
                             </p>
-                            <p>
+                            
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p class="text-right">
                                 <a v-on:click="reply(comment)" class="float-right btn btn-outline-primary ml-2">
                                     <i class="fa fa-reply"></i> Reply</a>
                                 <a v-if="comment.liked" v-on:click="dislike(comment)" class="float-right btn text-white btn-secondary">

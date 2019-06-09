@@ -1,3 +1,10 @@
 .reply {
     color: gold;
 }
+
+.bottom-column
+{
+    float: none;
+    display: table-cell;
+    vertical-align: bottom;
+}
