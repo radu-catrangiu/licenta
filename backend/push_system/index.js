@@ -16,6 +16,7 @@ const redisAdapter = adapter({
     password: process.env.REDIS_PASS || 'password',
 });
 
+io.path('/push');
 io.attach(server);
 io.adapter(redisAdapter);
 
@@ -26,10 +27,10 @@ const EXPIRY_INTERVAL = 30;
 async function verifyUser(token) {
     return new Promise((resolve, reject) => {
         insider('/core/tokens', 'check', { token }, (err, data) => {
+            console.log(err, data)
             if (err) {
                 return reject('USER_NOT_FOUND');
             }
-
             return resolve(data.user_id);
         });
     });
@@ -47,12 +48,7 @@ socketAuth(io, {
                 NX -- Only set the key if it does not already exist.
                 EX -- Next parameter is EXpiry time in seconds.
             */
-            const canConnect = await redis
-                .setAsync(`users:${token}`, socket.id, 'NX', 'EX', EXPIRY_INTERVAL);
-
-            if (!canConnect) {
-                return callback({ message: 'ALREADY_LOGGED_IN' });
-            }
+            await redis.saddAsync(`users:${user_id}`, socket.id);
 
             socket.user_id = user_id;
 
@@ -64,18 +60,12 @@ socketAuth(io, {
     },
     postAuthenticate: async (socket) => {
         console.log(`Socket ${socket.id} authenticated.`);
-
-        socket.conn.on('packet', async (packet) => {
-            if (socket.auth && packet.type === 'ping') {
-                await redis.setAsync(`users:${socket.user_id}`, socket.id, 'XX', 'EX', EXPIRY_INTERVAL);
-            }
-        });
     },
     disconnect: async (socket) => {
         console.log(`Socket ${socket.id} disconnected.`);
 
         if (socket.user_id) {
-            await redis.delAsync(`users:${socket.user_id}`);
+            await redis.sremAsync(`users:${socket.user_id}`, socket.id);
         }
     },
 });
@@ -88,9 +78,11 @@ mqtt_client.on('connect', function() {
             console.error('Unable to subscribe to `push`');
             process.exit(1);
         }
-        server.listen(PORT);
-        announcer.init('push_system', PORT, '/push/*');
-        console.log("Server started on port " + PORT);
+        server.listen(PORT, (err) => {
+            console.error(err);
+            announcer.init('push_system', PORT, '/push/*');
+            console.log("Server started on port " + PORT);
+        });
     });
 });
 
@@ -98,12 +90,13 @@ mqtt_client.on('message', async function(topic, message) {
     if (message instanceof Buffer) {
         message = JSON.parse(message);
     }
-    console.debug(topic, message);
-    const { user_id, event } = message;
-    const socket_id = await redis.getAsync(`users:${user_id}`);
-    const socket = io.sockets.connected[socket_id];
-
-    if (socket) {
-        socket.emit(event, "pls update");
+    console.debug(topic, JSON.stringify(message));
+    const { user_id, event, params } = message;
+    const socket_ids = await redis.smembersAsync(`users:${user_id}`);
+    for (let socket_id of socket_ids) {
+        const socket = io.sockets.connected[socket_id];
+        if (socket) {
+            socket.emit(event, params);
+        }
     }
 });
