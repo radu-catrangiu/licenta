@@ -65,6 +65,40 @@ export default {
             this.pages = Math.ceil(this.comments_count / this.comments_batch);
             this.comments = new Array(this.pages);
             await retrieve_comments(this, this.group_id);
+        },
+        reply(comment) {
+            if (!comment || !comment.user)
+                return null;
+            
+            const user = comment.user.username;
+            if (this.new_comment.length > 0) {
+                this.new_comment += ` `;
+            }
+            this.new_comment += `@${user}`;
+
+            this.$([document.documentElement, document.body]).animate({
+                scrollTop: this.$("#comment-input").offset().top - 10
+            }, 500);
+        },
+        async like(comment) {
+            await give_like_dislike(this, this.group_id, 'like', comment);
+            comment.liked = true;
+            comment.likes++;
+        },
+        async dislike(comment) {
+            await give_like_dislike(this, this.group_id, 'dislike', comment);
+            comment.liked = false;
+            comment.likes--;
+        },
+        filter_reply(content) {
+            if (!content)
+                return null;
+            const regex = /@[a-z\-_A-Z]*/g;
+            const found = content.match(regex) || [];
+            for (let str of found) {
+                content = content.replace(str, `<span class="reply"><b>${str}</b></span>`);
+            }
+            return '<span>' + content + '</span>';
         }
     }
 };
@@ -102,6 +136,9 @@ function retrieve_comments(self, group_id) {
                 resolve(null);
                 return;
             }
+            for (let comment of res) {
+                comment.user.profile_picture_id = get_profile_pic_url(self, comment);
+            }
             self.comments[self.current_page] = res;
             self.current_comments_page = res;
             resolve(res);
@@ -127,4 +164,30 @@ function add_comment(self, group_id) {
             resolve(res);
         });
     });
+}
+
+function give_like_dislike(self, group_id, type, comment) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id,
+            comment_id: comment.comment_id
+        };
+        self.$http.callAPI('/core/comments', type, params, (err, res) => {
+            if (err) {
+                resolve(null);
+                return;
+            }
+            resolve(res);
+        });
+    });
+}
+
+function get_profile_pic_url(self, comment) {
+    if (!comment || !comment.user) {
+        return null;
+    }
+    const id = comment.user.profile_picture_id;
+    return `${self.appConfig.$apiUrl}/profile_picture/${id}.png`;
 }

@@ -62,9 +62,11 @@ exports.retrieve = (env, params, done) => {
                         user: {
                             username: res.username,
                             firstname: res.info.firstname,
-                            lastname: res.info.lastname
+                            lastname: res.info.lastname,
+                            profile_picture_id: res.info.profile_picture_id
                         },
                         likes: comment.likes.length,
+                        liked: comment.likes.includes(user_id),
                         content: comment.content
                     }
 

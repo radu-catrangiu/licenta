@@ -7,7 +7,7 @@
             <div class="mb-3">
 
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Join the conversation"
+                    <input id="comment-input" type="text" class="form-control" placeholder="Join the conversation"
                         aria-label="Join the conversation" v-model="new_comment" :maxlength="255" />
                     <div class="input-group-append">
                         <button class="btn btn-warning" type="button" v-on:click="add_comment">
@@ -18,35 +18,31 @@
                 <div class="ml-2" style="color: gray;">{{new_comment.length}}/255</div>
             </div>
 
-            <!-- <div class="text-center mb-3">
-                <a class="btn btn-outline-danger" :class="{ 'disabled' : page === 1}" v-on:click="prev_page">Prev</a>
-                <span class="btn btn-danger mx-2">{{page}}</span>
-                <a class="btn btn-outline-danger" :class="{ 'disabled' : page === pages}"
-                    v-on:click="next_page">Next</a>
-            </div> -->
-
             <div v-for="comment in current_comments_page" class="card my-2">
-                <div class="card-body">
+                <div class="card-body" :id="comment.comment_id">
                     <div class="row">
                         <div class="col-md-2">
-                            <img src="../../../../assets/user_default.png" class="img img-rounded img-fluid" />
+                            <img v-if="comment && comment.user && comment.user.profile_picture_id" :src="comment.user.profile_picture_id" class="img img-rounded img-fluid"/>
+                            <img v-else src="../../../../assets/user_default.png" class="img img-rounded img-fluid" />
                             <p class="text-secondary text-center">
                                 {{comment.timestamp | time_ago}}
                             </p>
                         </div>
                         <div class="col-md-10">
-                            <p>
-                                <a class="float-left" href="#"><strong>{{comment.user.username}}</strong></a>
+                            <p v-if="comment && comment.user">
+                                <a class="float-left" :href="'#' + comment.comment_id"><strong>{{comment.user.username}}</strong></a>
                             </p>
                             <div class="clearfix"></div>
                             <p>
-                                {{comment.content}}
+                                <span v-html="filter_reply(comment.content)"></span>
                             </p>
                             <p>
-                                <a class="float-right btn btn-outline-primary ml-2">
+                                <a v-on:click="reply(comment)" class="float-right btn btn-outline-primary ml-2">
                                     <i class="fa fa-reply"></i> Reply</a>
-                                <a class="float-right btn text-white btn-danger">
-                                    <i class="fa fa-heart"></i> Like</a>
+                                <a v-if="comment.liked" v-on:click="dislike(comment)" class="float-right btn text-white btn-secondary">
+                                    {{comment.likes}} <i class="fa fa-heart-broken"></i> Dislike</a>
+                                <a v-else v-on:click="like(comment)" class="float-right btn text-white btn-danger">
+                                    {{comment.likes}} <i class="fa fa-heart"></i> Like</a>
                             </p>
                         </div>
                     </div>
