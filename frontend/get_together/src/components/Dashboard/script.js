@@ -30,10 +30,6 @@ export default {
         disconnect: function (data) {
             // eslint-disable-next-line
             console.log('socket disconnected: ', data);
-        },
-        update_notifications: function (data) {
-            // eslint-disable-next-line
-            console.log('update_notifications', data);
         }
     },
     data() {
