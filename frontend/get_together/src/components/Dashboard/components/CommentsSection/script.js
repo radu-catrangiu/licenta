@@ -68,6 +68,9 @@ export default {
             }
         },
         async add_comment() {
+            if (this.new_comment.length === 0) {
+                return;
+            }
             await add_comment(this, this.group_id);
             this.new_comment = '';
             await get_comments_count(this, this.group_id);

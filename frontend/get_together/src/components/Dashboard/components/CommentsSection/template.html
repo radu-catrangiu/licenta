@@ -8,7 +8,7 @@
 
                 <div class="input-group">
                     <input id="comment-input" type="text" class="form-control" placeholder="Join the conversation"
-                        aria-label="Join the conversation" v-model="new_comment" :maxlength="255" />
+                        aria-label="Join the conversation" v-model="new_comment" v-on:keyup.enter="add_comment" :maxlength="255" />
                     <div class="input-group-append">
                         <button class="btn btn-warning" type="button" v-on:click="add_comment">
                             Send
