@@ -2,9 +2,9 @@
   <div class="dropdown-menu" aria-labelledby="notificationsPopoverLink">
     <div v-if="notifications.length > 0">
       <div class="btn btn-danger" v-on:click="clear_all_notifications">
-          <span> CLEAR ALL NOTIFICATIONS</span>
+        <span>CLEAR ALL NOTIFICATIONS</span>
       </div>
-      <div v-if="index !== 0" class="dropdown-divider"></div>
+      <div class="dropdown-divider"></div>
     </div>
     <div v-if="notifications.length > 0" class="overflow-auto" style="max-height: 25vh;">
       <div v-for="(notification, index) in notifications" v-bind:key="notification.notification_id">
@@ -50,7 +50,6 @@ export default {
     },
     clear_all_notifications() {
       const notifications = JSON.parse(JSON.stringify(this.notifications));
-      this.notifications = [];
       for (let notification of notifications) {
         notification_seen(this, notification);
       }
@@ -75,7 +74,9 @@ function notification_seen(self, notification) {
           resolve(null);
           return;
         }
-
+        self.notifications = self.notifications.filter(
+          e => e.notification_id != notification.notification_id
+        );
         resolve(res);
       }
     );
@@ -126,7 +127,7 @@ function get_notifications_count(self) {
           resolve(null);
           return;
         }
-        self.$store.commit('set_notifications_count', res.count);
+        self.$store.commit("set_notifications_count", res.count);
         resolve(res);
       }
     );
