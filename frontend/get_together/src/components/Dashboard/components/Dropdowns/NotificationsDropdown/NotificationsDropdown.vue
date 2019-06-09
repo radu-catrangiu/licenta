@@ -1,6 +1,12 @@
 <template>
   <div class="dropdown-menu" aria-labelledby="notificationsPopoverLink">
     <div v-if="notifications.length > 0">
+      <div class="btn btn-danger" v-on:click="clear_all_notifications">
+          <span> CLEAR ALL NOTIFICATIONS</span>
+      </div>
+      <div v-if="index !== 0" class="dropdown-divider"></div>
+    </div>
+    <div v-if="notifications.length > 0" class="overflow-auto" style="max-height: 25vh;">
       <div v-for="(notification, index) in notifications" v-bind:key="notification.notification_id">
         <div v-if="index !== 0" class="dropdown-divider"></div>
 
@@ -25,10 +31,12 @@ export default {
   sockets: {
     update_notifications: async function(data) {
       await retrieve_notifications(this);
+      await get_notifications_count(this);
     }
   },
   async beforeMount() {
     await retrieve_notifications(this);
+    await get_notifications_count(this);
   },
   data() {
     return {
@@ -38,6 +46,15 @@ export default {
   methods: {
     async notification_action(notification) {
       await notification_seen(this, notification);
+      await get_notifications_count(this);
+    },
+    clear_all_notifications() {
+      const notifications = JSON.parse(JSON.stringify(this.notifications));
+      this.notifications = [];
+      for (let notification of notifications) {
+        notification_seen(this, notification);
+      }
+      this.$store.commit("set_notifications_count", 0);
     }
   }
 };
@@ -94,6 +111,26 @@ function process_notification(notification) {
       break;
     }
   }
+}
+
+function get_notifications_count(self) {
+  return new Promise((resolve, reject) => {
+    const user_token = self.$cookie.get("user_token");
+    const params = { user_token };
+    self.$http.callAPI(
+      "/core/notifications",
+      "count_new",
+      params,
+      (err, res) => {
+        if (err) {
+          resolve(null);
+          return;
+        }
+        self.$store.commit('set_notifications_count', res.count);
+        resolve(res);
+      }
+    );
+  });
 }
 </script>
 

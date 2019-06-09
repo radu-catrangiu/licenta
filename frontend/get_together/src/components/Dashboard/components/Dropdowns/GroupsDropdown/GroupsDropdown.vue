@@ -1,7 +1,7 @@
 <template>
   <div class="dropdown-menu" aria-labelledby="groupsPopoverLink">
     <a class="entry selected" href="#" v-on:click="openModal('#newGroupModal')">
-      <div class="create_new_group">
+      <div class="btn btn-warning">
         <div class="mx-3">Create new group</div>
       </div>
     </a>
@@ -109,13 +109,15 @@ function get_venues_list(self, group_id) {
 }
 
 .create_new_group:hover {
-  background-color: rgb(108, 108, 93);
-  color: rgb(255, 255, 255);
+  background-color: gray;
+  color: black;
+  text-decoration: none;
 }
 
 .create_new_group {
   background-color: rgb(45, 45, 41);
   color: rgb(255, 255, 255);
+  text-decoration: none;
 }
 
 .entry {

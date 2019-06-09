@@ -17,7 +17,10 @@
             data-offset="-100,0"
           >
             <span id="groups_button" class="text-right header-btn">
-              <i class="far fa-bell"></i>
+              <span class="fa-layers fa-fw">
+                <i class="far fa-bell"></i>
+                <span class="counter fa-layers-text badge badge-pill badge-warning" v-if="notifications_count > 0">{{notifications_count}}</span>
+              </span>
               <!-- Groups -->
             </span>
           </a>
@@ -69,6 +72,11 @@ export default {
       this.$("div#dashboard").css("filter", "blur(5px)");
       this.$(id).modal("show");
     }
+  },
+  computed: {
+    notifications_count() {
+      return this.$store.getters.notifications_count;
+    }
   }
 };
 </script>
@@ -88,5 +96,11 @@ export default {
   padding-top: 20px;
   font-size: 1.7em;
   color: black;
+}
+
+.counter {
+  font-size: 40%; 
+  margin-right: -10px;
+  float: left;
 }
 </style>
