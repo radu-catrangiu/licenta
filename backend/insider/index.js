@@ -84,6 +84,27 @@ app.get('/profile_picture/*', cors(), function(req, res) {
     });
 });
 
+app.get('/push/*', cors(), function(req, res) {
+    const service = services['/push/*'];
+    const url = service.address;
+    const path = req.url;
+    const pipe = req.pipe(request(url + path));
+
+    pipe.on('error', (err) => {
+        console.error(req.baseUrl, ' : ', err.message);
+        try {
+            clearTimeout(service.expiry);
+            delete service;
+        } catch (error) {
+            console.error(req.baseUrl, ' : ', error.message);
+        }
+        res.sendStatus(404);
+    });
+    pipe.on('response', () => {
+        pipe.pipe(res);
+    });
+});
+
 app.use('*', cors(), function(req, res) {
     if (services[req.baseUrl]) {
         const url = services[req.baseUrl].address;

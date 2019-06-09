@@ -53,7 +53,10 @@ Vue.use(new VueSocketIO({
         actionPrefix: 'SOCKET_',
         mutationPrefix: 'SOCKET_'
     },
-    options: { autoConnect: false } //Optional options
+    options: { 
+        autoConnect: false,
+        path: '/push'
+     }
 }))
 
 

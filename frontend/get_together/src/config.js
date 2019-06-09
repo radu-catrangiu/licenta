@@ -16,6 +16,6 @@ if (process.env.NODE_ENV === "production") {
 }
 
 config.comments_batch = 5;
-config.push_server = "http://localhost:6969";
+config.push_server = config.$apiUrl;
 
 export { config }

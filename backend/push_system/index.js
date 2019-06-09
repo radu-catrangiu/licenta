@@ -3,6 +3,7 @@ const http = require('http');
 const io = require('socket.io')();
 const socketAuth = require('socketio-auth');
 const adapter = require('socket.io-redis');
+const announcer = require('./announcer');
 
 const { insider, redis } = require('./utils');
 
@@ -88,6 +89,7 @@ mqtt_client.on('connect', function() {
             process.exit(1);
         }
         server.listen(PORT);
+        announcer.init('push_system', PORT, '/push/*');
         console.log("Server started on port " + PORT);
     });
 });

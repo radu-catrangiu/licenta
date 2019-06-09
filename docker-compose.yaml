@@ -20,10 +20,13 @@ services:
     container_name: database
     ports:
       - 27017:27017
+    expose:
+      - 27017
     networks: 
       net:
         aliases:
           - database
+    hostname: database
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -174,7 +177,7 @@ services:
       - mongo
       - broker
     environment:
-      MONGO_HOST: database
+      MONGO_HOST: mongo
       MONGO_USER: root
       MONGO_PASS: example
       MQTT_BROKER: mqtt://broker/
@@ -189,7 +192,7 @@ services:
     ports:
       - 1884:1883
     expose:
-      - 1884
+      - 1883
     networks:
       net:
         aliases:
@@ -203,6 +206,10 @@ services:
       - 6379
     ports:
       - 6379:6379
+    networks:
+      net:
+        aliases:
+          - redis-push
 
   redis-commander:
     container_name: redis-commander
@@ -213,7 +220,27 @@ services:
     - REDIS_HOSTS=redis-push
     ports:
     - 9002:8081
+    networks:
+      - net
 
+  push-system:
+    build:
+      context: ./backend/push_system/
+      dockerfile: Dockerfile
+    container_name: push-system
+    networks: 
+      - net
+    depends_on:
+      - redis-push
+      - push-broker
+    environment:
+      REDIS_HOST: redis-push
+      REDIS_PASS: password
+      REDIS_PORT: 6379
+      PUSH_MQTT_BROKER: mqtt://push-broker/
+      PORT: 6969
+      MQTT_BROKER: mqtt://broker/
+      ANNOUNCE_INTERVAL: 5000
 
 volumes:
   db_persistence:
