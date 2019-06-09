@@ -15,6 +15,11 @@ function push_notification(env, group_id) {
     });
 }
 
+function push_single_notification(env, user_id) {
+    env.push(user_id, 'update_notifications');
+}
+
 module.exports = {
-    push_notification
+    push_notification,
+    push_single_notification
 };

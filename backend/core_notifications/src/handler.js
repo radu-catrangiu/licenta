@@ -1,3 +1,5 @@
+const push_single_notification = require('./utils').push_single_notification;
+
 exports.count_new = (env, params, done) => {
     const user_id = params.user_id;
     const query = { user_id, seen: false };
@@ -26,6 +28,23 @@ exports.retrieve = (env, params, done) => {
     });
 };
 
+exports.mark_all_as_seen = (env, params, done) => {
+    const user_id = params.user_id;
+    const query = { user_id };
+    const update = {
+        $set: { seen: true }
+    };
+    env.notifications.updateMany(query, update, (err) => {
+        if (err) {
+            console.error(err);
+            return done('Something went wrong');
+        }
+
+        push_single_notification(env, user_id);
+        return done(null, { status: 'ok' });
+    });
+}
+
 exports.mark_as_seen = (env, params, done) => {
     const user_id = params.user_id;
     const query = { user_id, notification_id: params.notification_id };
@@ -38,6 +57,7 @@ exports.mark_as_seen = (env, params, done) => {
             return done('Something went wrong');
         }
 
+        push_single_notification(env, user_id);
         return done(null, { status: 'ok' });
     });
 };

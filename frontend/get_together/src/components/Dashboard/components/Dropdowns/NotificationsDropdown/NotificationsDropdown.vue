@@ -49,14 +49,30 @@ export default {
       await get_notifications_count(this);
     },
     clear_all_notifications() {
-      const notifications = JSON.parse(JSON.stringify(this.notifications));
-      for (let notification of notifications) {
-        notification_seen(this, notification);
-      }
-      this.$store.commit("set_notifications_count", 0);
+      clear_all_notifications(this);
     }
   }
 };
+
+function clear_all_notifications(self) {
+  return new Promise((resolve, reject) => {
+    const user_token = self.$cookie.get("user_token");
+    const params = { user_token };
+    self.$http.callAPI(
+      "/core/notifications",
+      "mark_all_as_seen",
+      params,
+      (err, res) => {
+        if (err) {
+          resolve(null);
+          return;
+        }
+
+        resolve(res);
+      }
+    );
+  });
+}
 
 function notification_seen(self, notification) {
   return new Promise((resolve, reject) => {
