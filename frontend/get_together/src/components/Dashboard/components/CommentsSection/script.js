@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export default {
     data() {
         return {
@@ -32,6 +34,11 @@ export default {
         },
         comments_page() {
             return this.comments[this.current_page];
+        }
+    },
+    filters: {
+        time_ago(timestamp) {
+            return moment(timestamp).fromNow();
         }
     },
     methods: {
