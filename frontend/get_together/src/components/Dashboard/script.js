@@ -31,10 +31,6 @@ export default {
             // eslint-disable-next-line
             console.log('socket disconnected: ', data);
         },
-        update_comments: function (data) {
-            // eslint-disable-next-line
-            console.log('update_comments', data);
-        },
         update_notifications: function (data) {
             // eslint-disable-next-line
             console.log('update_notifications', data);

@@ -1,6 +1,7 @@
 import moment from 'moment';
 
 export default {
+    name: 'comments-section',
     data() {
         return {
             group_id: '',
@@ -12,6 +13,14 @@ export default {
             new_comment: '',
             current_comments_page: []
         };
+    },
+    sockets: {
+        update_comments: async function (data) {
+            if (data.group_id === this.group_id) {
+                this.comments = new Array(this.pages);
+                await retrieve_comments(this, this.group_id);
+            }
+        }
     },
     beforeMount() {
         this.comments_batch = this.appConfig.comments_batch;

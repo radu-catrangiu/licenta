@@ -12,6 +12,25 @@ function validate_membership(env, user_id, group_id, done) {
     });
 }
 
+function update_comments(env, group_id, params) {
+    const query = { group_id };
+    const projection = { members: true, _id: false };
+    env.groups.findOne(query, { projection }, (err, res) => {
+        if (err || !res) {
+            console.error(err);
+            return;
+        }
+
+        if (res.members) {
+            res.members.forEach(member => {
+                const notif_params = { group_id, action: params.action };
+                env.push(member, 'update_comments', notif_params);
+            });
+        }
+    });
+}
+
 module.exports = {
-    validate_membership
+    validate_membership,
+    update_comments
 }

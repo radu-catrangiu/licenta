@@ -18,7 +18,20 @@ exports.add = (env, params, done) => {
             utils.validate_membership(env, user_id, group_id, done);
         },
         (done) => {
-            env.comments.insertOne(comment_object, done);
+            env.comments.insertOne(comment_object, (err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                return done();
+            });
+        },
+        (done) => {
+            const notif_params = {
+                action: 'new_comment'
+            };
+            utils.update_comments(env, group_id, notif_params);
+            return done();
         }
     ], (err) => {
         if (err) {
@@ -129,7 +142,20 @@ exports.like = (env, params, done) => {
             const update = {
                 $push: { likes: user_id }
             }
-            env.comments.updateOne(query, update, done);
+            env.comments.updateOne(query, update, (err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                return done();
+            });
+        },
+        (done) => {
+            const notif_params = {
+                action: 'like'
+            };
+            utils.update_comments(env, group_id, notif_params);
+            return done();
         }
     ], (err) => {
         if (err) {
@@ -154,7 +180,20 @@ exports.dislike = (env, params, done) => {
             const update = {
                 $pull: { likes: user_id }
             }
-            env.comments.updateOne(query, update, done);
+            env.comments.updateOne(query, update, (err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                return done();
+            });
+        },
+        (done) => {
+            const notif_params = {
+                action: 'dislike'
+            };
+            utils.update_comments(env, group_id, notif_params);
+            return done();
         }
     ], (err) => {
         if (err) {
@@ -166,6 +205,6 @@ exports.dislike = (env, params, done) => {
 }
 
 exports.test = (env, params, done) => {
-    env.push(params.user_id, 'update_notifications', params);
+    
     done(null, params);
 }
