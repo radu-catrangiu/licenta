@@ -116,16 +116,19 @@
                         </div>
                     </div>
 
-                    <div v-show="image">
+                    <div class="text-center" v-show="image">
                         <vue-croppie
                             id="croppie"
                             ref="croppieRef"
                             resultType="base64"
                             mouseWheelZoom="ctrl"
-                            :boundary="{width: 'auto', height: 300}"
+                            :boundary="{width: 300, height: 300}"
                             :viewport="{ width: 200, height: 200, type: 'circle' }"
                             :enableResize="false"
+                            :enableOrientation="true"
                         ></vue-croppie>
+                        <a class="btn btn-info text-white mx-2" v-on:click="rotate(-90)">Rotate Left</a>
+                        <a class="btn btn-info text-white mx-2" v-on:click="rotate(90)">Rotate Right</a>
                     </div>
 
                     <div class="row mb-4">
