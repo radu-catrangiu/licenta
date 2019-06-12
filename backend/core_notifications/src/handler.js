@@ -1,4 +1,4 @@
-const push_single_notification = require('./utils').push_single_notification;
+const push_notification = require('./utils').push_notification;
 
 exports.count_new = (env, params, done) => {
     const user_id = params.user_id;
@@ -40,7 +40,7 @@ exports.mark_all_as_seen = (env, params, done) => {
             return done('Something went wrong');
         }
 
-        push_single_notification(env, user_id);
+        push_notification(env, user_id);
         return done(null, { status: 'ok' });
     });
 }
@@ -57,7 +57,7 @@ exports.mark_as_seen = (env, params, done) => {
             return done('Something went wrong');
         }
 
-        push_single_notification(env, user_id);
+        push_notification(env, user_id);
         return done(null, { status: 'ok' });
     });
 };
