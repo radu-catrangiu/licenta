@@ -26,6 +26,7 @@ export default {
   props: ["user", "venues", "locations", "point_to_location_callback"],
   async mounted() {
     /* eslint-disable */
+    this.loadMap();
   },
   watch: {
     locations: function(new_val, old_val) {

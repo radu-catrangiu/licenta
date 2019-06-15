@@ -62,15 +62,10 @@ export default {
   },
   methods: {
     forceUpdate() {
-      console.log("asdasd");
       this.$forceUpdate();
     }
   }
 };
-
-function get_possible_values(self) {
-  return self.possible_values;
-}
 </script>
 
 <style>
