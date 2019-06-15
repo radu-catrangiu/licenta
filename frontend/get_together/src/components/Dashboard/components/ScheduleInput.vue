@@ -3,21 +3,19 @@
     <span>Time interval: </span>
     <select v-model="interval.start" v-on:change="forceUpdate">
       <option
-        v-for="value in possible_values"
+        v-for="value in possible_start_values(interval.end)"
         :value="value"
         :key="value"
         :selected="value === interval.start"
-        v-if="value < interval.end"
       >{{value | toTimeOfDay}}</option>
     </select>
     <span class="mx-2">-</span>
     <select v-model="interval.end" v-on:change="forceUpdate">
       <option
-        v-for="value in possible_values"
+        v-for="value in possible_end_values(interval.start)"
         :value="value"
         :key="value"
         :selected="value === interval.end"
-        v-if="value > interval.start"
       >{{value | toTimeOfDay}}</option>
     </select>
   </span>
@@ -63,6 +61,12 @@ export default {
   methods: {
     forceUpdate() {
       this.$forceUpdate();
+    },
+    possible_start_values(end) {
+      return this.possible_values.filter(e => e < end);
+    },
+    possible_end_values(start) {
+      return this.possible_values.filter(e => e > start);
     }
   }
 };
