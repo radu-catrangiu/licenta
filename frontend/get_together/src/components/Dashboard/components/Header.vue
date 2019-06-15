@@ -14,7 +14,7 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            data-offset="-100,0"
+            :data-offset="offset(true)"
           >
             <span id="groups_button" class="text-right header-btn">
               <span class="fa-layers fa-fw">
@@ -35,7 +35,7 @@
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            data-offset="-100,0"
+            :data-offset="offset()"
           >
             <span id="groups_button" class="text-right header-btn">
               <i class="fas fa-users"></i>
@@ -71,6 +71,17 @@ export default {
       this.$("div#dashboard").css("-ms-filter", "blur(5px)");
       this.$("div#dashboard").css("filter", "blur(5px)");
       this.$(id).modal("show");
+    },
+    offset(notif) {
+      console.log(window.innerWidth);
+      if (notif) {
+        return "-150,0";
+      }
+      if (window.innerWidth < 450) {
+        return "-200,0";
+      } else {
+        return "-150,0";
+      }
     }
   },
   computed: {

@@ -79,27 +79,41 @@
                 </div>
             </div>
             <div class="card-header" v-if="show_schedule_section">
-                <button
-                    class="btn btn-warning mr-2"
-                    v-on:click="get_browser_location"
-                >
-                    Get Browser Location
-                </button>
-                <button
-                    class="btn btn-success mr-2"
-                    v-on:click="get_point_location"
-                >
-                    Point to location
-                </button>
-                <button class="btn btn-danger" v-on:click="delete_location">
-                    Delete location
-                </button>
-                <button
-                    class="btn btn-primary mx-2"
-                    v-on:click="open_groups_mgmt"
-                >
-                    Group Management
-                </button>
+                <div class="row">
+                    <div class="col">
+                        <ScheduleInput
+                            class="mr-2"
+                            :day="day_index"
+                        ></ScheduleInput>
+                        <button
+                            class="btn btn-warning mr-2"
+                            v-on:click="get_browser_location"
+                        >
+                            <i class="fas fa-location-arrow"></i> Browser
+                            Location
+                        </button>
+                        <button
+                            class="btn btn-success mr-2"
+                            v-on:click="get_point_location"
+                        >
+                            <i class="fas fa-thumbtack"></i> Pick location
+                        </button>
+                        <button
+                            class="btn btn-danger"
+                            v-on:click="delete_location"
+                        >
+                            <i class="fas fa-ban"></i> Delete location
+                        </button>
+                    </div>
+                    <div class="col-xs">
+                        <button
+                            class="btn btn-primary mx-2"
+                            v-on:click="open_groups_mgmt"
+                        >
+                            <i class="fas fa-clipboard-list"></i> Options
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -144,28 +158,37 @@
 
                                     <div>{{ venue.vicinity }}</div>
 
-                                    <div>
-                                        <span
-                                            v-if="!venue.opening_hours"
-                                            class="badge badge-pill badge-info"
-                                            >Unknown schedule</span
-                                        >
-                                        <span
-                                            v-if="venue.opening_hours && venue.opening_hours.open_now"
-                                            class="badge badge-pill badge-success"
-                                            >Open Now</span
-                                        >
-                                        <span
-                                            v-if="venue.opening_hours && !venue.opening_hours.open_now"
-                                            class="badge badge-pill badge-danger"
-                                            >Closed Now</span
-                                        >
+                                    <div class="row">
+                                        <div class="col">
+                                            <span
+                                                v-if="!venue.opening_hours"
+                                                class="badge badge-pill badge-info"
+                                                >Unknown schedule</span
+                                            >
+                                            <span
+                                                v-if="venue.opening_hours && venue.opening_hours.open_now"
+                                                class="badge badge-pill badge-success"
+                                                >Open Now</span
+                                            >
+                                            <span
+                                                v-if="venue.opening_hours && !venue.opening_hours.open_now"
+                                                class="badge badge-pill badge-danger"
+                                                >Closed Now</span
+                                            >
+                                        </div>
+                                        <div class="col text-right">
+                                            <button
+                                                class="badge badge-pill badge-warning"
+                                            >
+                                                Vote!
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </li>
                         </div>
                     </div>
-                    <div  class="my-auto mx-auto" v-else>
+                    <div class="my-auto mx-auto" v-else>
                         <span>
                             No venues
                         </span>
@@ -198,14 +221,73 @@
         <!-- Card End -->
 
         <!-- Card Start -->
+        <div
+            class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white"
+        >
+            <div class="card-body">
+                <h3 class="text-center">Vote Results</h3>
 
+                <span class="text-center">Somebody Must vote</span>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="row my-1">
+                            <div
+                                class="col-xs text-right"
+                                style="width: 200px;"
+                            >
+                                Journey Pub
+                            </div>
+                            <div class="col-md">
+                                <div class="progress" style="height: 35px;">
+                                    <div
+                                        class="progress-bar"
+                                        role="progressbar"
+                                        style="width: 66%"
+                                        aria-valuenow="100"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div
+                                class="col-xs text-right"
+                                style="width: 200px;"
+                            >
+                                Ceainaria Infinitea
+                            </div>
+                            <div class="col-md">
+                                <div class="progress" style="height: 35px;">
+                                    <div
+                                        class="progress-bar bg-danger"
+                                        role="progressbar"
+                                        style="width: 33%"
+                                        aria-valuenow="100"
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h3 class="text-center">Location</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card End -->
+
+        <!-- Card Start -->
         <div
             class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white"
         >
             <CommentsSection></CommentsSection>
         </div>
-
         <!-- Card End -->
+
         <Footer></Footer>
     </div>
 </div>

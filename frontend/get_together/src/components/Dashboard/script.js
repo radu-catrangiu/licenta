@@ -6,6 +6,7 @@ import NewGroupModal from './components/Modals/NewGroupModal/NewGroupModal.vue';
 import GroupsModal from './components/Modals/GroupsModal/GroupsModal.vue';
 import GoogleMap from './components/GoogleMap/GoogleMap.vue';
 import CommentsSection from './components/CommentsSection/CommentsSection.vue';
+import ScheduleInput from './components/ScheduleInput.vue';
 
 export default {
     name: 'dashboard',
@@ -17,7 +18,8 @@ export default {
         NewGroupModal,
         GroupsModal,
         GoogleMap,
-        CommentsSection
+        CommentsSection,
+        ScheduleInput
     },
     sockets: {
         connect: function () {
