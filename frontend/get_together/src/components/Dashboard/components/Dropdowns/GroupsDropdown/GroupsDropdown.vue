@@ -31,6 +31,7 @@ export default {
       this.$(id).modal("show");
     },
     async switch_group(group_id) {
+      this.$store.commit("set_all_venues", Array(7).fill([]));
       await retrieve_group_details(this, group_id);
       await get_venues_list(this, group_id);
     }
