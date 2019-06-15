@@ -135,7 +135,7 @@ exports.get_venues = (env, params, done) => {
                         if (err) {
                             return done(null, []);
                         }
-                        console.log("Call to google!");
+                        console.log(new Date(), "Call to google!");
 
                         try {
                             const doc = JSON.parse(body);
