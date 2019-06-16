@@ -51,9 +51,16 @@
             </div>
             <div v-else>You could generate invite links from here if the group owner would allow it</div>
 
-            <div class="form-check" v-if="is_owner">
-              <input class="form-check-input" type="checkbox" value v-model="anyone_can_invite">
-              <label class="form-check-label">Anyone can invite?</label>
+            <div class="row">
+              <div class="col">
+                <div class="form-check" v-if="is_owner">
+                  <input class="form-check-input" type="checkbox" value v-model="anyone_can_invite">
+                  <label class="form-check-label">Anyone can invite?</label>
+                </div>
+              </div>
+              <div class="col">
+                <span class="text-right">{{message}}</span>
+              </div>
             </div>
 
             <!--  -->
@@ -74,6 +81,7 @@
 </template>
 
 <script>
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
@@ -82,7 +90,8 @@ export default {
       description: "",
       venues_type: "",
       is_owner: false,
-      anyone_can_invite: false
+      anyone_can_invite: false,
+      message: ""
     };
   },
   props: ["group"],
@@ -192,8 +201,9 @@ export default {
       link_input.select();
       document.execCommand("copy");
 
-      /* Replace this with a toast */
-      alert("Copied the text: " + link_input.value);
+      this.message = "Link copied to clipboard!"
+
+      setTimeout(() => this.message = "", 1500);
     }
   }
 };
