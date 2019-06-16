@@ -36,7 +36,12 @@
                 <div class="row">
                     <div class="col-md">
                         <h4 v-if="!current_group.name">{Group Name}</h4>
-                        <h4 v-else>{{ current_group.name }}</h4>
+                        <h4 v-else>
+                            {{ current_group.name }}
+                            <span class="badge badge-dark">{{
+                                venues_type
+                            }}</span>
+                        </h4>
                     </div>
                     <div class="col-md">
                         <div class="row text-right float-right">
@@ -46,7 +51,8 @@
                                 aria-pressed="false"
                                 v-on:click="show_schedule_section = !show_schedule_section"
                             >
-                                Group Actions
+                                <span v-if="show_schedule_section">Hide</span
+                                ><span v-else>Show</span> Group Actions
                             </button>
 
                             <div class="dropdown">
@@ -284,6 +290,10 @@
         <div
             class="card shadow p-2 mt-2 mb-4 bg-light rounded-lg border border-white"
         >
+            <div class="mx-5 my-5">
+                <h5><b>Group Description: </b></h5>
+                <h6><span class="mx-4 text-justify">{{ group_description }}</span></h6>
+            </div>
             <CommentsSection></CommentsSection>
         </div>
         <!-- Card End -->
