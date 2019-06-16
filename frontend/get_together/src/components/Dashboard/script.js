@@ -7,6 +7,7 @@ import GroupsModal from './components/Modals/GroupsModal/GroupsModal.vue';
 import GoogleMap from './components/GoogleMap/GoogleMap.vue';
 import CommentsSection from './components/CommentsSection/CommentsSection.vue';
 import ScheduleInput from './components/ScheduleInput.vue';
+import ResultsCard from './components/ResultsCard.vue';
 
 export default {
     name: 'dashboard',
@@ -19,7 +20,8 @@ export default {
         GroupsModal,
         GoogleMap,
         CommentsSection,
-        ScheduleInput
+        ScheduleInput,
+        ResultsCard
     },
     sockets: {
         connect: function () {
@@ -45,6 +47,9 @@ export default {
         };
     },
     computed: {
+        can_vote() {
+            return this.locations.find(e => e.username === this.user_info.username).lat_lng.lat != null;
+        },
         group_description() {
             return this.$store.getters.current_group.description || 'cafe';
         },
@@ -355,6 +360,7 @@ function vote_venue(self, venue_id) {
                     resolve(false);
                     return;
                 }
+                // eslint-disable-next-line
                 console.log(res);
                 resolve(true);
             }
