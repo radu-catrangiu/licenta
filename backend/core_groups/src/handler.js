@@ -238,7 +238,7 @@ exports.leave_group = (env, params, done) => {
                     update,
                     options,
                     (err, res) => {
-                        if (err || !res) {
+                        if (err || !res || !res.value) {
                             return done(
                                 'Something went wrong leaving the group'
                             );
