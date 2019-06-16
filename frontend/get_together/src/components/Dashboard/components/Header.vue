@@ -73,7 +73,6 @@ export default {
       this.$(id).modal("show");
     },
     offset(notif) {
-      console.log(window.innerWidth);
       if (notif) {
         return "-150,0";
       }

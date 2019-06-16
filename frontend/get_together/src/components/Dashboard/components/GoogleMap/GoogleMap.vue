@@ -31,7 +31,6 @@ export default {
   watch: {
     locations: function(new_val, old_val) {
       if (this.mapLoaded) {
-        console.log("watch:", new_val);
         unset_markers(this.markers);
         set_markers(this.map, this.markers, new_val);
       }
