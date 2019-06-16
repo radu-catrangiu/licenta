@@ -1,7 +1,7 @@
 <template>
   <span>
-    <span>Time interval: </span>
-    <select v-model="interval.start" v-on:change="forceUpdate">
+    <span class="mr-1">Time interval:</span>
+    <select v-model="interval.start" v-on:change="forceUpdate" ref="startSelect">
       <option
         v-for="value in possible_start_values(interval.end)"
         :value="value"
@@ -10,7 +10,7 @@
       >{{value | toTimeOfDay}}</option>
     </select>
     <span class="mx-2">-</span>
-    <select v-model="interval.end" v-on:change="forceUpdate">
+    <select v-model="interval.end" v-on:change="forceUpdate" ref="endSelect">
       <option
         v-for="value in possible_end_values(interval.start)"
         :value="value"
@@ -22,31 +22,25 @@
 </template>
 
 <script>
+const minutes_in_day = 24 * 60;
 export default {
   name: "ScheduleInput",
-  props: ["day"],
+  props: ["value"],
   data() {
     return {
       possible_values: [],
-      minutes_in_day: 24 * 60,
-      days: Array(7)
+      interval: this.value
     };
   },
-  watch: {},
-  created() {
-    for (let v = 0; v <= this.minutes_in_day; v += 30) {
-      this.possible_values.push(v);
-    }
-    for (let day = 0; day < 7; day++) {
-      this.days[day] = {
-        start: 0,
-        end: 24 * 60
-      };
+  watch: {
+    value(new_value, old_value) {
+      this.interval = new_value;
     }
   },
-  computed: {
-    interval() {
-      return this.days[this.day];
+  created() {
+    console.log("created!!", this.value);
+    for (let v = 0; v <= minutes_in_day; v += 30) {
+      this.possible_values.push(v);
     }
   },
   filters: {
@@ -61,6 +55,7 @@ export default {
   methods: {
     forceUpdate() {
       this.$forceUpdate();
+      this.$emit("input", this.interval);
     },
     possible_start_values(end) {
       return this.possible_values.filter(e => e < end);

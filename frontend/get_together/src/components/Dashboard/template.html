@@ -89,7 +89,7 @@
                     <div class="col">
                         <ScheduleInput
                             class="mr-2"
-                            :day="day_index"
+                            v-model="time_intervals[day_index]"
                         ></ScheduleInput>
                         <button
                             class="btn btn-warning mr-2"

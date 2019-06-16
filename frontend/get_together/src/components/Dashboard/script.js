@@ -23,8 +23,6 @@ export default {
     },
     sockets: {
         connect: function () {
-            // eslint-disable-next-line
-            console.log('socket connected', this.$socket)
             this.$socket.emit('authentication', {
                 token: this.$cookie.get('user_token')
             });
@@ -39,7 +37,11 @@ export default {
             weekdays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             map_loaded: false,
             day_index: 0,
-            show_schedule_section: false
+            show_schedule_section: false,
+            time_intervals: Array(7).fill({
+                start: 0,
+                end: 24 * 60
+            })
         };
     },
     computed: {
@@ -92,16 +94,19 @@ export default {
             await get_group_names(this);
             await retrieve_group_details(this);
             await get_venues_list(this);
+            await set_time_intervals(this);
+            this.$store.subscribe(async mutation => {
+                if (mutation.type === 'set_current_group') {
+                    await set_time_intervals(this);
+                }
+            });
         }
     },
     async mounted() {
-
         document.title = 'Dashboard | Get Together';
         this.$socket.open();
     },
     updated() {
-        // eslint-disable-next-line
-        // console.log(this.$('[data-toggle="tooltip"]'));
         this.$('[data-toggle="tooltip"]').tooltip({ animation: false });
     },
     filters: {
@@ -142,7 +147,8 @@ export default {
                 user_token,
                 group_id: this.current_group.group_id,
                 day: this.day_index,
-                lat_lng: location.lat_lng
+                lat_lng: location.lat_lng,
+                time_intervals: [this.time_intervals[this.day_index]]
             };
             this.$http.callAPI('/core/locations', 'report_location', params);
         },
@@ -313,5 +319,16 @@ function get_venues_list(self) {
                 resolve(true);
             }
         );
+    });
+}
+
+async function set_time_intervals(self) {
+    return new Promise(resolve => {
+        const username = self.user_info.username;
+        const time_intervals = self.current_group.locations
+            .find(e => e.username === username)
+            .days.map(e => e.time_intervals[0] || { start: 0, end: 24 * 60 });
+        self.time_intervals = time_intervals;
+        resolve(true);
     });
 }

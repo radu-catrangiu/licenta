@@ -3,10 +3,15 @@ const insider = require('./utils').insider;
 exports.report_location = (env, params, done) => {
     const group_id = params.group_id;
     const user_id = params.user_id;
+    const default_time_interval = { start: 0, end: 24 * 60 };
+    const time_intervals = params.time_intervals || [default_time_interval];
 
     const query = { group_id, locations: { $elemMatch: { user_id } } };
     const update = {
-        $set: { [`locations.$.days.${params.day}.lat_lng`]: params.lat_lng }
+        $set: {
+            [`locations.$.days.${params.day}.time_intervals`]: time_intervals,
+            [`locations.$.days.${params.day}.lat_lng`]: params.lat_lng
+        }
     };
     env.groups.updateOne(query, update, (err, res) => {
         if (err || !res) {
