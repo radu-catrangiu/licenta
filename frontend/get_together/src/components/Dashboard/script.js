@@ -205,6 +205,9 @@ export default {
                     }, 1000, 'swing');
                 }
             );
+        },
+        async vote_venue(venue) {
+            await vote_venue(this, venue.id);
         }
     }
 };
@@ -322,7 +325,7 @@ function get_venues_list(self) {
     });
 }
 
-async function set_time_intervals(self) {
+function set_time_intervals(self) {
     return new Promise(resolve => {
         const username = self.user_info.username;
         const time_intervals = self.current_group.locations
@@ -330,5 +333,31 @@ async function set_time_intervals(self) {
             .days.map(e => e.time_intervals[0] || { start: 0, end: 24 * 60 });
         self.time_intervals = time_intervals;
         resolve(true);
+    });
+}
+
+function vote_venue(self, venue_id) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id: self.$cookie.get('group_id') || self.group_ids[0],
+            venue_id,
+            day: self.day_index
+        };
+        self.$http.callAPI(
+            '/core/locations',
+            'vote_location',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+                console.log(res);
+                resolve(true);
+            }
+        );
     });
 }

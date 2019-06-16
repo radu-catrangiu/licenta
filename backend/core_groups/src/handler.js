@@ -53,10 +53,26 @@ exports.retrieve_group_details = (env, params, done) => {
                         return location;
                     });
 
+                    const votes = Array(7);
+                    Object.values(group_data.votes || {}).forEach(e => {
+                        for (let i = 0; i < 7; i++) {
+                            if (!votes[i]) {
+                                votes[i] = {};
+                            }
+                            if (e[i] === null) continue;
+                            if (!votes[i][e[i]]) {
+                                votes[i][e[i]] = 1;
+                            } else {
+                                votes[i][e[i]]++;
+                            }
+                        }
+                    });
+
                     return done(null, {
                         group_id,
                         members,
                         locations,
+                        votes,
                         ...group_data.group_info,
                         is_owner: group_data.owner_user_id === user_id
                     });
@@ -97,7 +113,8 @@ exports.create_group = (env, params, done) => {
                     lat_lng: {}
                 })
             }
-        ]
+        ],
+        votes: {}
     };
 
     if (!group_name) {

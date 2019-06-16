@@ -5,10 +5,11 @@ module.exports = {
         password: process.env.MONGO_PASS || 'example',
         db: 'core',
         collections: {
-            groups: 'groups'
+            groups: 'groups',
+            users: 'users'
         },
         indexes: {}
     },
     google_api_key: 'AIzaSyB4Es6NlcHrTX1L9bN92asDcRZa6nP4p_M',
-    port: 8081
+    port: 11111
 };

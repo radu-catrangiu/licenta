@@ -6,6 +6,7 @@ exports.get_venues = (env, params, done) => {
     const group_id = params.group_id;
     const type = params.type || "cafe";
     let computed = [];
+    let voted_ids;
 
     async.waterfall([
         (done) => {
@@ -76,6 +77,18 @@ exports.get_venues = (env, params, done) => {
                         parseInt(Math.max(...arr)),
                         50000
                     );
+                }
+
+                voted_ids = Object.values(res.votes).reduce((acc, val) => {
+                    for (let i = 0; i < 7; i++) {
+                        if (!acc[i]) acc[i] = [];
+                        if (val[i]) acc[i].push(val[i]);
+                    }
+                    return acc;
+                }, Array(7));
+                
+                for (let i = 0; i < 7; i++) {
+                    voted_ids[i] = [...new Set(voted_ids[i])];
                 }
 
                 return done();
@@ -183,6 +196,33 @@ exports.get_venues = (env, params, done) => {
                 } else {
                     return done(null, computed.map(e => e.in_db.map(e => e.data).slice(0, 10)));
                 }
+            });
+        },
+        (values, done) => {
+            for (let i = 0; i < 7; i++) {
+                voted_ids[i] = voted_ids[i].filter(id => !values[i].some(x => x.id === id));
+            }
+            const parallel_tasks = voted_ids.map(id_list => {
+                if (id_list.length === 0) {
+                    return (done) => done(null, []);
+                }
+                return (done) => {
+                    env.venues.find({ venue_id : { $in : id_list } }).toArray((err, res) => {
+                        if (err) {
+                            console.error(err);
+                            return done(null, []);
+                        }
+
+                        return done(null, res.map(e => {
+                            e.data.voted = true;
+                            return e.data;
+                        }));
+                    });
+                }
+            });
+
+            async.parallel(parallel_tasks, (err, res) => {
+                return done(err, values.map((arr, i) => [...arr, ...res[i]]));
             });
         }
         ],(err, res) => {

@@ -1,4 +1,5 @@
 const insider = require('./utils').insider;
+const async = require('async');
 
 exports.report_location = (env, params, done) => {
     const group_id = params.group_id;
@@ -45,5 +46,58 @@ exports.get_venues = (env, params, done) => {
             console.error(err);
         }
         return done(err, res);
+    });
+};
+
+exports.vote_location = (env, params, done) => {
+    let username, values;
+    const venue_id = params.venue_id;
+    const day = params.day;
+
+    async.waterfall([
+        (done) => {
+            const query = { user_id: params.user_id };
+            const projection = { username: true, _id: false };
+            env.users.findOne(query, { projection }, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
+                
+                username = res.username;
+                return done();
+            });
+        },
+        (done) => {
+            const query = { group_id: params.group_id };
+            env.groups.findOne(query, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
+
+                values = res.votes[username] || Array(7).fill(null);
+                values[day] = venue_id;
+                return done();
+            });
+        },
+        (done) => {
+            const query = { group_id: params.group_id };
+            const update = {
+                $set: { [`votes.${username}`]: values }
+            }
+            env.groups.updateOne(query, update, (err) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
+                return done();
+            });
+        }
+    ], (err, res) => {
+        if (err) {
+           return done("Something went wrong"); 
+        }
+        return done(null, { status: 'ok' });
     });
 };
