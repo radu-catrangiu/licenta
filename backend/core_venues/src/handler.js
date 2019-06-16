@@ -79,6 +79,8 @@ exports.get_venues = (env, params, done) => {
                     );
                 }
 
+                res.votes = res.votes || {};
+
                 voted_ids = Object.values(res.votes).reduce((acc, val) => {
                     for (let i = 0; i < 7; i++) {
                         if (!acc[i]) acc[i] = [];
