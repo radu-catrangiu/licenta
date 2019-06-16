@@ -43,6 +43,12 @@ export default {
         };
     },
     computed: {
+        group_description() {
+            return this.$store.getters.current_group.description || 'cafe';
+        },
+        venues_type() {
+            return this.$store.getters.current_group.venues_type || 'cafe';
+        },
         user_info() {
             return this.$store.getters.user_info;
         },
@@ -289,7 +295,8 @@ function get_venues_list(self) {
         const user_token = self.$cookie.get('user_token');
         const params = {
             user_token,
-            group_id: self.$cookie.get('group_id') || self.group_ids[0]
+            group_id: self.$cookie.get('group_id') || self.group_ids[0],
+            type: self.current_group.venues_type || 'cafe'
         };
         self.$http.callAPI(
             '/core/locations',

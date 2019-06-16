@@ -4,6 +4,7 @@ const redeemable = require('coupon-code');
 
 exports.retrieve_group_details = (env, params, done) => {
     const group_id = params.group_id;
+    const user_id = params.user_id;
 
     async.waterfall(
         [
@@ -56,7 +57,8 @@ exports.retrieve_group_details = (env, params, done) => {
                         group_id,
                         members,
                         locations,
-                        ...group_data.group_info
+                        ...group_data.group_info,
+                        is_owner: group_data.owner_user_id === user_id
                     });
                 });
             }
@@ -80,7 +82,9 @@ exports.create_group = (env, params, done) => {
         owner_user_id: user_id,
         group_info: {
             name: group_name,
-            description: ''
+            description: '',
+            venues_type: 'cafe',
+            anyone_can_invite: false
         },
         timestamp: new Date(),
         open_invites: [], // invite ids here
@@ -181,7 +185,8 @@ exports.update_group_info = (env, params, done) => {
 
     env.groups.updateOne(query, update, (err, res) => {
         if (err || !res) {
-            return done('Something went wrong creating the group');
+            console.error(err);
+            return done('Something went updating the group');
         }
 
         return done(null, 'ok');
