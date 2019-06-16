@@ -22,7 +22,7 @@
                 <div class="card-body" :id="comment.comment_id">
                     <div class="row">
                         <div class="col-md-2 text-center">
-                            <img v-if="comment && comment.user && comment.user.profile_picture_id" :src="comment.user.profile_picture_id" class="img img-rounded img-fluid"/>
+                            <img v-if="comment && comment.user && comment.user.profile_picture_id != undefined" :src="comment.user.profile_picture_id" class="img img-rounded img-fluid"/>
                             <img v-else src="../../../../assets/user_default.png" class="img img-rounded img-fluid" />
                             <p class="text-secondary text-center">
                                 {{comment.timestamp | time_ago}}

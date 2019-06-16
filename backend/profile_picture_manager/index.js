@@ -124,7 +124,7 @@ async.waterfall([
         process.exit(1);
     }
     app.listen(config.port, () => {
-        console.log('Server started');
+        console.log('Server started on port ' + config.port);
         announcer.init('profile_picture_manager', config.port, '/upload/picture');
         announcer.init('profile_picture_manager', config.port, '/profile_picture/*');
     });

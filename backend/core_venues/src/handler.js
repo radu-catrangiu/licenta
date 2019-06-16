@@ -102,9 +102,13 @@ exports.get_venues = (env, params, done) => {
                         })
                         // .sort({ "data.rating": -1 })
                         .toArray((err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return done(err);
+                            }
                             res = res.filter(e => e.data.types.includes(type));
                             e.in_db = res || [];
-                            done(err, res);
+                            return done(null, res);
                         });
                 };
             });

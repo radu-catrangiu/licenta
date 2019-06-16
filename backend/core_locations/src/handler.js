@@ -36,6 +36,9 @@ exports.delete_location = (env, params, done) => {
 
 exports.get_venues = (env, params, done) => {
     insider('/backend/venues', 'get_venues', params, (err, res) => {
+        if (err) {
+            console.error(err);
+        }
         return done(err, res);
     });
 };

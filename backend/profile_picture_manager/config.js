@@ -16,5 +16,5 @@ module.exports = {
         }
     },
     path: './pictures',
-    port: 6969
+    port: 11111
 };
