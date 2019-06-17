@@ -1,4 +1,4 @@
-const insider = require('./utils').insider;
+const utils = require('./utils');
 const async = require('async');
 
 exports.report_location = (env, params, done) => {
@@ -41,7 +41,7 @@ exports.delete_location = (env, params, done) => {
 };
 
 exports.get_venues = (env, params, done) => {
-    insider('/backend/venues', 'get_venues', params, (err, res) => {
+    utils.insider('/backend/venues', 'get_venues', params, (err, res) => {
         if (err) {
             console.error(err);
         }
@@ -53,6 +53,7 @@ exports.vote_location = (env, params, done) => {
     let username, values;
     const venue_id = params.venue_id;
     const day = params.day;
+    let members = [];
 
     async.waterfall([
         (done) => {
@@ -78,6 +79,7 @@ exports.vote_location = (env, params, done) => {
 
                 values = res.votes[username] || Array(7).fill(null);
                 values[day] = venue_id;
+                members = res.members;
                 return done();
             });
         },
@@ -93,12 +95,16 @@ exports.vote_location = (env, params, done) => {
                 }
                 return done();
             });
+        },
+        (done) => {
+            utils.push_group_update(env, members);
+            return done();
         }
-    ], (err, res) => {
+    ], (err) => {
         if (err) {
            return done("Something went wrong"); 
         }
-        return done(null, { status: 'ok' });
+        return done(null, values);
     });
 };
 

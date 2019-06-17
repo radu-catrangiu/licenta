@@ -24,6 +24,13 @@ function insider(service, method, params, done) {
     });
 }
 
+function push_group_update(env, user_ids) {
+    user_ids.forEach(user_id => {
+        env.push(user_id, 'update_group');
+    });
+}
+
 module.exports = {
-    insider
+    insider,
+    push_group_update
 };

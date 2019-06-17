@@ -92,6 +92,7 @@ services:
       MONGO_USER: root
       MONGO_PASS: example
       MQTT_BROKER: mqtt://broker/
+      PUSH_MQTT_BROKER: mqtt://push-broker/
       ANNOUNCE_INTERVAL: 5000
       INSIDER_URL: http://insider:8089
 
