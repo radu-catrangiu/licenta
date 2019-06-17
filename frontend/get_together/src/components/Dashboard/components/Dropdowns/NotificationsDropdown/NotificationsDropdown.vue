@@ -134,12 +134,12 @@ function process_notification(notification) {
     }
     case "MARKED_READY": {
       const { user, group_name } = notification.notification_params;
-      notification.text = `<b>${user}</b> marked himself ready in the group <b>${group_name}</b>`;
+      notification.text = `<b>${user}</b> is ready in the group <b>${group_name}</b>`;
       break;
     }
     case "MARKED_NOT_READY": {
       const { user, group_name } = notification.notification_params;
-      notification.text = `<b>${user}</b> marked himself not ready in the group <b>${group_name}</b>`;
+      notification.text = `<b>${user}</b> is not ready in the group <b>${group_name}</b>`;
       break;
     }
   }
