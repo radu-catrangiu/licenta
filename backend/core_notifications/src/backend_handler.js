@@ -7,28 +7,47 @@ exports.create = (env, params, done) => {
         return done('user_id is required');
     }
 
+    const notification_params = params.notification_params || {};
+
     async.waterfall(
         [
             (done) => {
+                const query = { user_id: params.user_id };
+                const projection = { username: true, _id: false };
+                env.users.findOne(query, { projection }, (err, res) => {
+                    if (err || !res) {
+                        console.error(err);
+                        return done(err);
+                    }
+                    notification_params.user = res.username;
+                    return done();
+                });
+            },
+            (done) => {
+                const recipient = params.recipient;
+                if (params.recipient) {
+                    return done(null, [recipient]);
+                }
                 const query = { group_id: params.group_id };
-                const projection = { members: true, _id: false };
+                const projection = { members: true, group_info: true, _id: false };
                 env.groups.findOne(query, { projection }, (err, res) => {
                     if (err || !res) {
                         console.error(err);
                         return done(err);
                     }
-
+                    notification_params.group_name = res.group_info.name;
                     return done(null, res.members);
                 });
             },
             (members, done) => {
                 async.forEachOf(members, (user_id, key, done) => {
+                    if (user_id === params.user_id) return done();
                     const notification = {
                         notification_id: uuid(),
                         user_id: user_id,
                         group_id: params.group_id,
                         type: params.type,
-                        notification_params: params.notification_params || {},
+                        notification_params,
                         timestamp: Date.now(),
                         seen: false
                     };
