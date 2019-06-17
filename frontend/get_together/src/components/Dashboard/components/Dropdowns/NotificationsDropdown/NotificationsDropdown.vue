@@ -123,8 +123,23 @@ function retrieve_notifications(self) {
 function process_notification(notification) {
   switch (notification.type) {
     case "NEW_COMMENT": {
-      const { comment_author, group_name } = notification.notification_params;
-      notification.text = `<b>${comment_author}</b> left a comment on the group <b>${group_name}</b>`;
+      const { user, group_name } = notification.notification_params;
+      notification.text = `<b>${user}</b> left a comment on the group <b>${group_name}</b>`;
+      break;
+    }
+    case "LIKE_COMMENT": {
+      const { user, group_name } = notification.notification_params;
+      notification.text = `<b>${user}</b> liked your comment on the group <b>${group_name}</b>`;
+      break;
+    }
+    case "MARKED_READY": {
+      const { user, group_name } = notification.notification_params;
+      notification.text = `<b>${user}</b> marked himself ready in the group <b>${group_name}</b>`;
+      break;
+    }
+    case "MARKED_NOT_READY": {
+      const { user, group_name } = notification.notification_params;
+      notification.text = `<b>${user}</b> marked himself not ready in the group <b>${group_name}</b>`;
       break;
     }
   }
