@@ -101,3 +101,38 @@ exports.vote_location = (env, params, done) => {
         return done(null, { status: 'ok' });
     });
 };
+
+exports.get_voted_ids = (env, params, done) => {
+    async.waterfall([
+        (done) => {
+            const query = { user_id: params.user_id };
+            const projection = { username: true, _id: false };
+            env.users.findOne(query, { projection }, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
+
+                return done(null, res.username);
+            });
+        },
+        (username, done) => {
+            const query = { group_id: params.group_id };
+            env.groups.findOne(query, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
+
+                let values = res.votes[username] || Array(7).fill(null);
+                return done(null, values);
+            });
+        }
+    ], (err, res) => {
+        if (err) {
+            return done("Something went wrong");
+        }
+
+        return done(null, res);
+    });
+}
