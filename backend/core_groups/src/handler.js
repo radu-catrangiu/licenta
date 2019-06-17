@@ -618,6 +618,7 @@ exports.get_group_names = (env, params, done) => {
 };
 
 exports.mark_as_ready = (env, params, done) => {
+    const user_id = params.user_id;
     const group_id = params.group_id;
     const username = params.username;
 
@@ -633,11 +634,24 @@ exports.mark_as_ready = (env, params, done) => {
         const user_ids = res.value.members || [];
 
         utils.push_group_update(env, user_ids);
+
+        const params = {
+            user_id,
+            group_id,
+            type: 'MARKED_READY'
+        };
+        utils.insider('/backend/notifications', 'create', params, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+
         return done(null, { status: 'ok' });
     });
 };
 
 exports.unmark_as_ready = (env, params, done) => {
+    const user_id = params.user_id;
     const group_id = params.group_id;
     const username = params.username;
 
@@ -653,6 +667,18 @@ exports.unmark_as_ready = (env, params, done) => {
         const user_ids = res.value.members || [];
 
         utils.push_group_update(env, user_ids);
+
+        const params = {
+            user_id,
+            group_id,
+            type: 'MARKED_NOT_READY'
+        };
+        utils.insider('/backend/notifications', 'create', params, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+
         return done(null, { status: 'ok' });
     });
 };
