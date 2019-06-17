@@ -29,6 +29,9 @@ export default {
                 token: this.$cookie.get('user_token')
             });
         },
+        update_group: async function () {
+            await retrieve_group_details(this);
+        },
         disconnect: function (data) {
             // eslint-disable-next-line
             console.log('socket disconnected: ', data);
@@ -47,6 +50,15 @@ export default {
         };
     },
     computed: {
+        ready() {
+            return this.ready_members.includes(this.user_info.username);
+        },
+        members_not_ready() {
+            return this.current_group.members.filter(member => !this.ready_members.includes(member.username));
+        },
+        ready_members() {
+            return this.current_group.members_ready || [];
+        },
         can_vote() {
             return this.locations.find(e => e.username === this.user_info.username).lat_lng.lat != null;
         },
@@ -120,6 +132,12 @@ export default {
         }
     },
     methods: {
+        async mark_ready() {
+            await mark_as_ready(this);
+        },
+        async unmark_ready() {
+            await unmark_as_ready(this);
+        },
         open_groups_mgmt() {
             show_modal(this, '#groupsModal', 'show');
         },
@@ -353,6 +371,58 @@ function vote_venue(self, venue_id) {
         self.$http.callAPI(
             '/core/locations',
             'vote_location',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log(res);
+                resolve(true);
+            }
+        );
+    });
+}
+
+function mark_as_ready(self) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id: self.$cookie.get('group_id') || self.group_ids[0],
+            username: self.user_info.username
+        };
+        self.$http.callAPI(
+            '/core/groups',
+            'mark_as_ready',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+                // eslint-disable-next-line
+                console.log(res);
+                resolve(true);
+            }
+        );
+    });
+}
+
+function unmark_as_ready(self) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id: self.$cookie.get('group_id') || self.group_ids[0],
+            username: self.user_info.username
+        };
+        self.$http.callAPI(
+            '/core/groups',
+            'unmark_as_ready',
             params,
             (err, res) => {
                 if (err) {

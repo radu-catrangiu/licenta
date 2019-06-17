@@ -1,9 +1,5 @@
 <template>
   <div class="card-body">
-    <div class="mb-4 text-right"> 
-      <button class="btn btn-info">Done Choosing</button>
-    </div>
-
     <h3 class="text-center">Vote Results</h3>
 
     <div class="row">
@@ -83,7 +79,7 @@ export default {
         this.all_venues = mutation.payload;
         if (!this.votes_data) return;
         this.votes_data.forEach((votes, index) => {
-          const venue_ids = Object.keys(votes);
+          const venue_ids = Object.keys(votes || {});
           const all_venues = this.$store.getters.all_venues;
 
           this.votes[index] = all_venues[index]

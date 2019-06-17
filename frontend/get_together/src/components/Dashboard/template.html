@@ -63,7 +63,7 @@
             </div>
             <div class="card-header" v-if="show_schedule_section">
                 <div class="row">
-                    <div class="col">
+                    <div v-if="!ready" class="col">
                         <ScheduleInput
                             class="mr-2"
                             v-model="time_intervals[day_index]"
@@ -82,10 +82,24 @@
                             <i class="fas fa-thumbtack"></i> Pick location
                         </button>
                         <button
-                            class="btn btn-danger"
+                            class="btn btn-danger mr-2"
                             v-on:click="delete_location"
                         >
                             <i class="fas fa-ban"></i> Delete location
+                        </button>
+                        <button 
+                            class="btn btn-info"
+                            v-on:click="mark_ready"
+                        > 
+                            <i class="fas fa-check"></i> Ready
+                        </button>
+                    </div>
+                    <div v-else class="col">
+                            <button 
+                            class="btn btn-warning"
+                            v-on:click="unmark_ready"
+                        > 
+                            <i class="fas fa-times"></i> Not Ready
                         </button>
                     </div>
                     <div class="col-xs">
@@ -159,7 +173,7 @@
                                                 >Closed Now</span
                                             >
                                         </div>
-                                        <div v-if="can_vote" class="col text-right">
+                                        <div v-if="!ready && can_vote" class="col text-right">
                                             <button
                                                 class="btn btn-warning btn-sm"
                                                 v-on:click="vote_venue(venue)"
@@ -183,26 +197,36 @@
                 </div>
             </div>
             <div class="card-footer">
-                <div v-if="!current_group.members">
-                    <h2>{Member Icons}</h2>
-                </div>
-                <div v-else class="testimonial-group">
-                    <div class="row justify-content-end pr-3">
-                        <div
-                            class="col-xs-1 ml-2 circle"
-                            v-for="member in current_group.members"
-                            :key="member.username"
-                        >
-                            <div
-                                data-toggle="tooltip"
-                                data-placement="left"
-                                :title="member.username"
-                            >
-                                {{ member.username | initial }}
+                <div class="row">
+                    <div class="col-xs my-auto" v-if="current_group.members">
+                        <span class="ml-2" style="color: darkgray; font-size: 150%;">
+                            <b>Members left to choose:</b>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div v-if="!current_group.members">
+                            <h2>{Member Icons}</h2>
+                        </div>
+                        <div v-else class="testimonial-group">
+                            <div class="row justify-content-end pr-3">
+                                <div
+                                    class="col-xs-1 ml-2 circle"
+                                    v-for="member in members_not_ready"
+                                    :key="member.username"
+                                >
+                                    <div
+                                        data-toggle="tooltip"
+                                        data-placement="left"
+                                        :title="member.username"
+                                    >
+                                        {{ member.username | initial }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
         <!-- Card End -->
