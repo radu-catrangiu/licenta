@@ -128,6 +128,7 @@ exports.count = (env, params, done) => {
 
 exports.like = (env, params, done) => {
     const { group_id, user_id, comment_id } = params;
+    let notification_recipient = null;
 
     async.waterfall([
         (done) => {
@@ -142,9 +143,13 @@ exports.like = (env, params, done) => {
             const update = {
                 $push: { likes: user_id }
             }
-            env.comments.updateOne(query, update, (err, res) => {
+            env.comments.findOneAndUpdate(query, update, (err, res) => {
                 if (err) {
                     return done(err);
+                }
+
+                if (res && res.value) {
+                    notification_recipient = res.value.user_id;
                 }
 
                 return done();
@@ -155,6 +160,24 @@ exports.like = (env, params, done) => {
                 action: 'like'
             };
             utils.update_comments(env, group_id, notif_params);
+            return done();
+        },
+        (done) => {
+            if (!notification_recipient) return done();
+            const params = {
+                user_id,
+                group_id,
+                recipient: notification_recipient,
+                type: 'LIKE_COMMENT',
+                notification_params: {
+                    comment_id
+                }
+            };
+            utils.insider('/backend/notifications', 'create', params, (err, res) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
             return done();
         }
     ], (err) => {
@@ -202,9 +225,4 @@ exports.dislike = (env, params, done) => {
         }
         return done(null, { status: 'ok' });
     });
-}
-
-exports.test = (env, params, done) => {
-    
-    done(null, params);
 }
