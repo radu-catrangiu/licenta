@@ -31,6 +31,7 @@ export default {
         },
         update_group: async function () {
             await retrieve_group_details(this);
+            await get_venues_list(this);
         },
         disconnect: function (data) {
             // eslint-disable-next-line
@@ -50,6 +51,9 @@ export default {
         };
     },
     computed: {
+        voted_venue() {
+            return this.$store.getters.voted_venues[this.day_index] || null;
+        },
         ready() {
             return this.ready_members.includes(this.user_info.username);
         },
@@ -297,6 +301,31 @@ async function get_group_names(self) {
     });
 }
 
+function get_voted_venues(self) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id: self.$cookie.get('group_id') || self.group_ids[0]
+        };
+        self.$http.callAPI(
+            '/core/locations',
+            'get_voted_ids',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+
+                self.$store.commit("set_voted_venues", res);
+                resolve(true);
+            }
+        );
+    });
+}
+
 async function retrieve_group_details(self) {
     return new Promise(resolve => {
         const user_token = self.$cookie.get('user_token');
@@ -316,6 +345,7 @@ async function retrieve_group_details(self) {
                 }
 
                 self.$store.commit('set_current_group', res);
+                get_voted_venues(self);
                 resolve(true);
             }
         );
@@ -378,8 +408,8 @@ function vote_venue(self, venue_id) {
                     resolve(false);
                     return;
                 }
-                // eslint-disable-next-line
-                console.log(res);
+
+                self.$store.commit("set_voted_venues", res);
                 resolve(true);
             }
         );

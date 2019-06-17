@@ -10,6 +10,7 @@ const store = new Vuex.Store({
         groups_list: [],
         current_group: {},
         all_venues: Array(7),
+        voted_venues: Array(7),
         notifications_count: 0
     },
     mutations: {
@@ -27,6 +28,9 @@ const store = new Vuex.Store({
         },
         set_all_venues(state, payload) {
             state.all_venues = payload;
+        },
+        set_voted_venues(state, payload) {
+            state.voted_venues = payload;
         },
         set_notifications_count(state, payload) {
             state.notifications_count = payload;
@@ -51,6 +55,9 @@ const store = new Vuex.Store({
         },
         all_venues(state) {
             return state.all_venues;
+        },
+        voted_venues(state) {
+            return state.voted_venues;
         },
         notifications_count(state) {
             return state.notifications_count;

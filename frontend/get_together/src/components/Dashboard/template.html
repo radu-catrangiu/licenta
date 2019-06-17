@@ -175,10 +175,15 @@
                                         </div>
                                         <div v-if="!ready && can_vote" class="col text-right">
                                             <button
-                                                class="btn btn-warning btn-sm"
+                                                class="btn btn-sm"
+                                                :class="{
+                                                    'btn-warning': voted_venue !== venue.id, 
+                                                    'btn-secondary': voted_venue === venue.id
+                                                }"
                                                 v-on:click="vote_venue(venue)"
+                                                :disabled="voted_venue === venue.id"
                                             >
-                                                Vote!
+                                                {{voted_venue === venue.id ? 'Voted' : 'Vote!'}}
                                             </button>
                                         </div>
                                     </div>
