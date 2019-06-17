@@ -10,6 +10,7 @@ module.exports = {
         },
         indexes: {}
     },
+    push_broker: process.env.PUSH_MQTT_BROKER || "mqtt://localhost:1884",
     google_api_key: 'AIzaSyB4Es6NlcHrTX1L9bN92asDcRZa6nP4p_M',
     port: 11111
 };

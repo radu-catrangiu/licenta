@@ -130,7 +130,12 @@ exports.get_voted_ids = (env, params, done) => {
                     return done(err);
                 }
 
-                let values = res.votes[username] || Array(7).fill(null);
+                let values;
+                if (res && res.votes) {
+                    values = res.votes[username] || Array(7).fill(null);
+                } else {
+                    values = Array(7).fill(null);
+                }
                 return done(null, values);
             });
         }

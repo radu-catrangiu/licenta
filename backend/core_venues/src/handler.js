@@ -46,7 +46,7 @@ exports.get_venues = (env, params, done) => {
                         },
                         radius: 0
                     };
-                    if (day.count == 1) {
+                    if (day.count === 1) {
                         res.radius = 2500;
                     }
                     return res;
@@ -119,7 +119,8 @@ exports.get_venues = (env, params, done) => {
                         .toArray((err, res) => {
                             if (err) {
                                 console.error(err);
-                                return done(err);
+                                e.in_db = [];
+                                return done(null, []);
                             }
                             res = res.filter(e => e.data.types.includes(type));
                             e.in_db = res || [];
