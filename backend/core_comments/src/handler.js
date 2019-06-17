@@ -31,6 +31,21 @@ exports.add = (env, params, done) => {
                 action: 'new_comment'
             };
             utils.update_comments(env, group_id, notif_params);
+
+            const params = {
+                user_id,
+                group_id,
+                type: 'NEW_COMMENT',
+                notification_params: {
+                    comment_id: comment_object.comment_id
+                }
+            };
+            utils.insider('/backend/notifications', 'create', params, (err, res) => {
+                if (err) {
+                    console.error(err);
+                }
+            });
+
             return done();
         }
     ], (err) => {
