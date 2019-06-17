@@ -1,6 +1,7 @@
 const uuid = require('uuid').v4;
 const async = require('async');
 const redeemable = require('coupon-code');
+const utils = require('./utils');
 
 exports.retrieve_group_details = (env, params, done) => {
     const group_id = params.group_id;
@@ -54,7 +55,7 @@ exports.retrieve_group_details = (env, params, done) => {
                     });
 
                     const votes = Array(7);
-                    Object.values(group_data.votes || {}).forEach(e => {
+                    Object.values(group_data.votes || {}).forEach((e) => {
                         for (let i = 0; i < 7; i++) {
                             if (!votes[i]) {
                                 votes[i] = {};
@@ -73,6 +74,7 @@ exports.retrieve_group_details = (env, params, done) => {
                         members,
                         locations,
                         votes,
+                        members_ready: group_data.members_ready,
                         ...group_data.group_info,
                         is_owner: group_data.owner_user_id === user_id
                     });
@@ -114,7 +116,8 @@ exports.create_group = (env, params, done) => {
                 })
             }
         ],
-        votes: {}
+        votes: {},
+        members_ready: []
     };
 
     if (!group_name) {
@@ -612,4 +615,44 @@ exports.get_group_names = (env, params, done) => {
 
             return done(null, result);
         });
+};
+
+exports.mark_as_ready = (env, params, done) => {
+    const group_id = params.group_id;
+    const username = params.username;
+
+    const query = { group_id };
+    const update = {
+        $addToSet: { members_ready: username }
+    };
+    env.groups.findOneAndUpdate(query, update, (err, res) => {
+        if (err || !res || !res.value) {
+            return done('Something went wrong');
+        }
+
+        const user_ids = res.value.members || [];
+
+        utils.push_group_update(env, user_ids);
+        return done(null, { status: 'ok' });
+    });
+};
+
+exports.unmark_as_ready = (env, params, done) => {
+    const group_id = params.group_id;
+    const username = params.username;
+
+    const query = { group_id };
+    const update = {
+        $pull: { members_ready: username }
+    };
+    env.groups.findOneAndUpdate(query, update, (err, res) => {
+        if (err || !res || !res.value) {
+            return done('Something went wrong');
+        }
+
+        const user_ids = res.value.members || [];
+
+        utils.push_group_update(env, user_ids);
+        return done(null, { status: 'ok' });
+    });
 };

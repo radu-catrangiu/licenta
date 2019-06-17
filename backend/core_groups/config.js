@@ -19,5 +19,6 @@ module.exports = {
             }
         }
     },
+    push_broker: process.env.PUSH_MQTT_BROKER || "mqtt://localhost:1884",
     port: 11111
 };
