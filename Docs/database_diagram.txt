@@ -1,0 +1,75 @@
+  // https://dbdiagram.io/d
+  
+ Table users {
+   user_id UUID [primary key, not null, unique]
+   username String
+   email String
+   groups Array
+   info Object
+ }
+
+Table logins {
+  username String [primary key, unique]
+  user_id UUID [not null, unique, ref: > users.user_id]
+  email String
+  hash String
+  salt String
+ }
+ 
+ Table tokens {
+   token UUID [primary key, unique]
+   user_id UUID [ref: > users.user_id]
+ }
+
+Table groups {
+  group_id UUID [primary key, not null, unique]
+  members Array
+  owner_user_id UUID [ref: > users.user_id]
+  group_info Object
+  timestamp datetime
+  open_invites Array
+  locations Array(7)
+  members_ready Array
+  votes Object[username:Array(7)]
+}
+
+Table invites {
+  invite_id UUID [primary key, not null, unique]
+  group_id UUID [ref: > groups.group_id]
+  redeem_code String
+  single_use boolean
+  redeemed boolean
+  timestamp datetime
+  redeemed_timestamp datetime
+}
+
+Table comments {
+  comment_id UUID [primary key, not null, unique]
+  content String
+  user_id UUID [ref: > users.user_id]
+  group_id UUID [ref: > groups.group_id]
+  timestamp Number
+  likes Array
+}
+
+Table notifications {
+  notification_id UUID [primary key, not null, unique]
+  user_id UUID [ref: > users.user_id]
+  group_id UUID [ref: > groups.group_id]
+  type String
+  notification_params Object
+  timestamp Number
+  seen boolean
+}
+
+Table venues {
+  venue_id UUID [primary key, not null, unique]
+  location Object
+  name String
+  data Object
+}
+
+Table pictures {
+  picture_id UUID [primary key, not null, unique]
+  user_id UUID [ref: > users.user_id]
+}
