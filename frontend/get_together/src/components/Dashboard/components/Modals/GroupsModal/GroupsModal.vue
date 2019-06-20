@@ -63,7 +63,16 @@
               </div>
             </div>
 
-            <!--  -->
+            <div class="text-center mt-3">
+              <div class="list-group-item bg-light">Members</div>
+              <ul class="list-group list-group-flush group-members">
+                <li
+                  class="list-group-item"
+                  v-for="member in members"
+                  v-bind:key="member.username"
+                >{{member.username}}</li>
+              </ul>
+            </div>
           </div>
           <div class="modal-footer">
             <button
@@ -81,7 +90,7 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
+import { setTimeout } from "timers";
 export default {
   data() {
     return {
@@ -95,6 +104,12 @@ export default {
     };
   },
   props: ["group"],
+  computed: {
+    members() {
+      const current_group = this.$store.getters.current_group || {};
+      return current_group.members || [];
+    }
+  },
   mounted() {
     /* eslint-disable */
     this.$store.subscribe(async mutation => {
@@ -201,13 +216,19 @@ export default {
       link_input.select();
       document.execCommand("copy");
 
-      this.message = "Link copied to clipboard!"
+      this.message = "Link copied to clipboard!";
 
-      setTimeout(() => this.message = "", 1500);
+      setTimeout(() => (this.message = ""), 1500);
     }
   }
 };
 </script>
 
 <style>
+.group-members {
+  max-height: 150px;
+  margin-bottom: 10px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
 </style>
