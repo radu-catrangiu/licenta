@@ -205,7 +205,8 @@
                 <div class="row">
                     <div class="col-xs my-auto" v-if="current_group.members">
                         <span class="ml-2" style="color: darkgray; font-size: 150%;">
-                            <b>Members left to choose:</b>
+                            <b v-if="members_not_ready.length !== 0">Members not ready:</b>
+                            <b v-else>All Members are ready</b>
                         </span>
                     </div>
                     <div class="col">
