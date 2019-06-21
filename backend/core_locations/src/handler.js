@@ -14,9 +14,13 @@ exports.report_location = (env, params, done) => {
             [`locations.$.days.${params.day}.lat_lng`]: params.lat_lng
         }
     };
-    env.groups.updateOne(query, update, (err, res) => {
+    env.groups.findOneAndUpdate(query, update, (err, res) => {
         if (err || !res) {
             return done(null, { status: 1 });
+        }
+
+        if (res.value) {
+            utils.push_group_update(env, res.value.members);
         }
 
         return done(null, { status: 0 });
@@ -31,9 +35,13 @@ exports.delete_location = (env, params, done) => {
     const update = {
         $set: { [`locations.$.days.${params.day}.lat_lng`]: {} }
     };
-    env.groups.updateOne(query, update, (err, res) => {
+    env.groups.findOneAndUpdate(query, update, (err, res) => {
         if (err || !res) {
             return done(null, { status: 1 });
+        }
+
+        if (res.value) {
+            utils.push_group_update(env, res.value.members);
         }
 
         return done(null, { status: 0 });
