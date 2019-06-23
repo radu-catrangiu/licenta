@@ -5,7 +5,7 @@ export default async function validate_token(self, redirect) {
     return new Promise ((resolve) => {
         self.$http.callAPI('/core/tokens', 'validate', params, (err, res) => {
             if (err) {
-                // self.$router.push('/login');
+                self.$router.push('/login');
                 resolve();
                 return;
             }
@@ -16,7 +16,7 @@ export default async function validate_token(self, redirect) {
                 }
                 resolve();
             } else {
-                // self.$router.push('/login');
+                self.$router.push('/login');
                 resolve();
             }
         });
