@@ -5,7 +5,7 @@
 
     <div class="row">
       <div v-if="results_ready" class="col">
-        <div class="list-group mx-5 my-2">
+        <div v-if="final_results.length > 0" class="list-group mx-5 my-2">
           <div
             v-for="(result, index) in final_results"
             v-bind:key="index"
@@ -19,8 +19,16 @@
               <h5 class="mb-1">{{result.weekday}}</h5>
             </div>
             <p class="mb-1">{{result.venue.vicinity}}</p>
-            <small>Anytime between <b>{{result.interval.start | toTimeOfDay}}</b> and <b>{{result.interval.end | toTimeOfDay}}</b></small>
+            <small v-if="result.interval.start < result.interval.end">
+              Anytime between
+              <b>{{result.interval.start | toTimeOfDay}}</b> and
+              <b>{{result.interval.end | toTimeOfDay}}</b>
+            </small>
+            <small v-else>Sadly, we couldn't match any of your schedules ;(</small>
           </div>
+        </div>
+        <div v-else class="text-center">
+          <h4>Sadly, we couldn't compute any results using your schedules and preferences</h4>
         </div>
       </div>
       <div v-else class="col text-center">
@@ -80,15 +88,17 @@ export default {
         return false;
       }
 
-      return (this.group_data.members.length === this.group_data.members_ready.length);
+      return (
+        this.group_data.members.length === this.group_data.members_ready.length
+      );
     },
     final_results() {
       if (!this.$store.getters.all_venues) {
         return [];
       }
-      if (this.all_venues.length === 0) {
-        this.all_venues = this.$store.getters.all_venues;
-      }
+      // if (this.all_venues.length === 0) {
+      //   this.all_venues = this.$store.getters.all_venues;
+      // }
 
       return compute_results(this.group_data, this.all_venues)
         .map((elem, index) => {
@@ -226,6 +236,9 @@ function compute_results(group_data, all_venues) {
       if (!time_intervals[index] || !chosen_venues[index]) {
         return null;
       }
+      // if (time_intervals[index].start > time_intervals[index].end) {
+      //   return null;
+      // }
       return {
         venue: chosen_venues[index],
         interval: time_intervals[index]
