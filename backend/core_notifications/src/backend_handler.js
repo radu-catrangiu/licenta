@@ -33,7 +33,7 @@ exports.create = (env, params, done) => {
                 env.groups.findOne(query, { projection }, (err, res) => {
                     if (err || !res) {
                         console.error(err);
-                        return done(err);
+                        return done(err || `Could not find group ${params.group_id}`);
                     }
                     notification_params.group_name = res.group_info.name;
                     return done(null, res.members);
