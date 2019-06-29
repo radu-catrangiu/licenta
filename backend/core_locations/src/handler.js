@@ -31,17 +31,43 @@ exports.delete_location = (env, params, done) => {
     const group_id = params.group_id;
     const user_id = params.user_id;
 
-    const query = { group_id, locations: { $elemMatch: { user_id } } };
-    const update = {
-        $set: { [`locations.$.days.${params.day}.lat_lng`]: {} }
-    };
-    env.groups.findOneAndUpdate(query, update, (err, res) => {
-        if (err || !res) {
-            return done(null, { status: 1 });
-        }
+    async.waterfall([
+        (done) => {
+            const query = { user_id };
+            const projection = { username: true, _id: false };
+            env.users.findOne(query, { projection }, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    return done(err);
+                }
 
-        if (res.value) {
-            utils.push_group_update(env, res.value.members);
+                return done(null, res.username);
+            });
+        },
+        (username, done) => {
+            const query = { group_id, locations: { $elemMatch: { user_id } } };
+            const update = {
+                $set: { 
+                    [`locations.$.days.${params.day}.lat_lng`]: {},
+                    [`locations.$.days.${params.day}.time_intervals`]: [],
+                    [`votes.${username}.${params.day}`]: null
+                }
+            };
+            env.groups.findOneAndUpdate(query, update, (err, res) => {
+                if (err || !res) {
+                    return done(err || "No groups found");
+                }
+        
+                if (res.value) {
+                    utils.push_group_update(env, res.value.members);
+                }
+        
+                return done();
+            });
+        }
+    ], (err) => {
+        if (err) {
+            return done(null, { status: 1 });
         }
 
         return done(null, { status: 0 });
