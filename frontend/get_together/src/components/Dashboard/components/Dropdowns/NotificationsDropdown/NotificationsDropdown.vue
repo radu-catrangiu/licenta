@@ -45,6 +45,11 @@ export default {
   },
   methods: {
     async notification_action(notification) {
+      let group_id = notification.group_id;
+      this.$store.commit("set_all_venues", Array(7).fill([]));
+      await retrieve_group_details(this, group_id);
+      await get_venues_list(this, group_id);
+
       await notification_seen(this, notification);
       await get_notifications_count(this);
     },
@@ -163,6 +168,57 @@ function get_notifications_count(self) {
       }
     );
   });
+}
+
+function retrieve_group_details(self, group_id) {
+  return new Promise(resolve => {
+    const user_token = self.$cookie.get("user_token");
+    const params = {
+      user_token,
+      group_id
+    };
+    self.$http.callAPI(
+      "/core/groups",
+      "retrieve_group_details",
+      params,
+      (err, res) => {
+        if (err) {
+          // Do something
+          resolve(false);
+          return;
+        }
+
+        self.$store.commit("set_current_group", res);
+        self.$cookie.set("group_id", group_id);
+        resolve(true);
+      }
+    );
+  });
+}
+
+function get_venues_list(self, group_id) {
+    return new Promise(resolve => {
+        const user_token = self.$cookie.get('user_token');
+        const params = {
+            user_token,
+            group_id
+        };
+        self.$http.callAPI(
+            '/core/locations',
+            'get_venues',
+            params,
+            (err, res) => {
+                if (err) {
+                    // Do something
+                    resolve(false);
+                    return;
+                }
+
+                self.$store.commit("set_all_venues", res);
+                resolve(true);
+            }
+        );
+    });
 }
 </script>
 
