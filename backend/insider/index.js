@@ -14,15 +14,55 @@ function add_service(name, address, path) {
     const INTERVAL = process.env.ANNOUNCE_INTERVAL || 300000;
     const service = { name, address, path };
 
-    if (services[path]) {
-        clearTimeout(services[path].expiry);
+    if (!services[path]) {
+        services[path] = {
+            index: 0,
+            instances: []
+        };
+    }
+
+    let existing = services[path].instances.find((s) => s.address === address);
+    if (existing && existing.expiry) {
+        clearTimeout(existing.expiry);
+        services[path].instances = services[path].instances.filter(
+            (s) => s.address !== address
+        );
     }
 
     service.expiry = setTimeout(() => {
-        delete services[path];
+        remove_service(address, path);
     }, INTERVAL);
 
-    services[path] = service;
+    services[path].instances.push(service);
+}
+
+function remove_service(address, path) {
+    if (!services[path]) {
+        return;
+    }
+
+    let new_instances = services[path].instances.filter(
+        (s) => s.address !== address
+    );
+
+    if (new_instances.length === 0) {
+        delete services[path];
+        return;
+    }
+
+    services[path].index = 0;
+    services[path].instances = new_instances;
+}
+
+function get_address(path) {
+    const service = services[path];
+    if (!service) {
+        return null;
+    }
+
+    const address = service.instances[service.index].address;
+    service.index = (service.index + 1) % service.instances.length;
+    return address;
 }
 
 udp_server.bind(8089);
@@ -32,8 +72,8 @@ udp_server.on('message', function(message, rinfo) {
     const port = message.port;
     const host = rinfo.address;
     const address = `http://${host}:${port}`;
-    console.log(message);
-    console.log(rinfo);
+    // console.log(message);
+    // console.log(rinfo);
 
     add_service(message.name, address, message.service);
 });
@@ -50,7 +90,7 @@ mqtt_client.on('message', function(topic, message) {
     if (message instanceof Buffer) {
         message = JSON.parse(message);
     }
-    console.debug(topic, message);
+    // console.debug(topic, message);
 
     if (message.address instanceof Array) {
         //TODO: Find what address is in local network
@@ -64,16 +104,18 @@ mqtt_client.on('message', function(topic, message) {
 });
 
 app.get('/profile_picture/*', cors(), function(req, res) {
-    const service = services['/profile_picture/*'];
-    const url = service.address;
+    const address = get_address('/profile_picture/*');
+    if (!address) {
+        return res.sendStatus(404);
+    }
     const path = req.url;
-    const pipe = req.pipe(request(url + path));
+    const pipe = req.pipe(request(address + path));
+    console.log(address + path);
 
     pipe.on('error', (err) => {
         console.error(req.baseUrl, ' : ', err.message);
         try {
-            clearTimeout(service.expiry);
-            delete service;
+            remove_service(address, '/profile_picture/*');
         } catch (error) {
             console.error(req.baseUrl, ' : ', error.message);
         }
@@ -85,16 +127,18 @@ app.get('/profile_picture/*', cors(), function(req, res) {
 });
 
 app.get('/push/*', cors(), function(req, res) {
-    const service = services['/push/*'];
-    const url = service.address;
+    const address = get_address('/push/*');
+    if (!address) {
+        return res.sendStatus(404);
+    }
     const path = req.url;
-    const pipe = req.pipe(request(url + path));
+    const pipe = req.pipe(request(address + path));
+    console.log(address + path);
 
     pipe.on('error', (err) => {
         console.error(req.baseUrl, ' : ', err.message);
         try {
-            clearTimeout(service.expiry);
-            delete service;
+            remove_service(address, '/push/*');
         } catch (error) {
             console.error(req.baseUrl, ' : ', error.message);
         }
@@ -106,16 +150,16 @@ app.get('/push/*', cors(), function(req, res) {
 });
 
 app.use('*', cors(), function(req, res) {
-    if (services[req.baseUrl]) {
-        const url = services[req.baseUrl].address;
-        const path = services[req.baseUrl].path;
-        const pipe = req.pipe(request(url + path));
+    const address = get_address(req.baseUrl);
+    if (address) {
+        const path = req.baseUrl;
+        const pipe = req.pipe(request(address + path));
+        console.log(address + path);
 
         pipe.on('error', (err) => {
             console.error(req.baseUrl, ' : ', err.message);
             try {
-                clearTimeout(services[req.baseUrl].expiry);
-                delete services[req.baseUrl];
+                remove_service(address, path);
             } catch (error) {
                 console.error(req.baseUrl, ' : ', error.message);
             }
