@@ -18,5 +18,6 @@ module.exports = {
         port: process.env.REDIS_PORT || 6379,
         password: process.env.REDIS_PASS || 'password'
     },
-    port: 8081,
+    cache_expiry: 24 * 3600 * 7,
+    port: 7070,
 };
