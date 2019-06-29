@@ -185,6 +185,9 @@ services:
       MONGO_HOST: database
       MONGO_USER: root
       MONGO_PASS: example
+      REDIS_HOST: redis-tokens
+      REDIS_PASS: password
+      REDIS_PORT: 6379
       MQTT_BROKER: mqtt://broker/
       ANNOUNCE_INTERVAL: 5000
       INSIDER_URL: http://insider:8089
@@ -237,31 +240,6 @@ services:
       net:
         aliases:
           - push-broker
-  
-  redis-push:
-    image: redis
-    container_name: redis-push
-    hostname: redis-push
-    expose:
-      - 6379
-    ports:
-      - 6379:6379
-    networks:
-      net:
-        aliases:
-          - redis-push
-
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
-    image: rediscommander/redis-commander:latest
-    restart: always
-    environment:
-      - REDIS_HOSTS=redis-push
-    ports:
-      - 9002:8081
-    networks:
-      - net
 
   push-system:
     build:
@@ -271,19 +249,40 @@ services:
     networks: 
       - net
     depends_on:
-      - redis-push
       - push-broker
     ports:
       - 6969:6969
     environment:
-      REDIS_HOST: redis-push
-      REDIS_PASS: password
-      REDIS_PORT: 6379
       PUSH_MQTT_BROKER: mqtt://push-broker/
       PORT: 6969
       MQTT_BROKER: mqtt://broker/
       INSIDER_URL: http://insider:8089
       ANNOUNCE_INTERVAL: 5000
+  
+  redis-tokens:
+    image: redis
+    container_name: redis-tokens
+    hostname: redis-tokens
+    expose:
+      - 6379
+    ports:
+      - 6379:6379
+    networks:
+      net:
+        aliases:
+          - redis-tokens
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=redis-tokens
+    ports:
+      - 9002:8081
+    networks:
+      - net
 
 volumes:
   db_persistence:

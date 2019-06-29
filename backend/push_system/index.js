@@ -2,28 +2,17 @@ const mqtt = require('mqtt');
 const http = require('http');
 const io = require('socket.io')();
 const socketAuth = require('socketio-auth');
-const adapter = require('socket.io-redis');
 const announcer = require('./announcer');
 
-const { insider, redis } = require('./utils');
+const { insider } = require('./utils');
+const database = {};
 
 const PORT = process.env.PORT || 6969;
 const server = http.createServer();
 
-const redisAdapter = adapter({
-    host: process.env.REDIS_HOST || 'localhost',
-    port: process.env.REDIS_PORT || 6379,
-    password: process.env.REDIS_PASS || 'password',
-});
-
 io.path('/push');
 io.attach(server);
-io.adapter(redisAdapter);
 
-// Socket.io ping interval is 25 seconds
-const EXPIRY_INTERVAL = 30;
-
-// dummy user verification
 async function verifyUser(token) {
     return new Promise((resolve, reject) => {
         insider('/core/tokens', 'check', { token }, (err, data) => {
@@ -43,13 +32,11 @@ socketAuth(io, {
         try {
             const user_id = await verifyUser(token);
 
-            /*
-                XX -- Only set the key if it already exists.
-                NX -- Only set the key if it does not already exist.
-                EX -- Next parameter is EXpiry time in seconds.
-            */
-            await redis.saddAsync(`users:${user_id}`, socket.id);
+            if (database[user_id] === undefined) {
+                database[user_id] = [];
+            }
 
+            database[user_id].push(socket.id);
             socket.user_id = user_id;
 
             return callback(null, true);
@@ -65,7 +52,11 @@ socketAuth(io, {
         console.log(`Socket ${socket.id} disconnected.`);
 
         if (socket.user_id) {
-            await redis.sremAsync(`users:${socket.user_id}`, socket.id);
+            const user_id = socket.user_id;
+            database[user_id] = database[user_id].filter((id) => id !== socket.id);
+            if (database[user_id].length === 0) {
+                delete database[user_id];
+            }
         }
     },
 });
@@ -92,7 +83,7 @@ mqtt_client.on('message', async function(topic, message) {
     }
     console.debug(topic, JSON.stringify(message));
     const { user_id, event, params } = message;
-    const socket_ids = await redis.smembersAsync(`users:${user_id}`);
+    socket_ids = database[user_id];
     for (let socket_id of socket_ids) {
         const socket = io.sockets.connected[socket_id];
         if (socket) {
