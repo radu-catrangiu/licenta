@@ -24,9 +24,9 @@ exports.create = (env, params, done) => {
                 });
             },
             (done) => {
-                const recipient = params.recipient;
+                let recipients = null;
                 if (params.recipient) {
-                    return done(null, [recipient]);
+                    recipients = [params.recipient];
                 }
                 const query = { group_id: params.group_id };
                 const projection = { members: true, group_info: true, _id: false };
@@ -36,7 +36,10 @@ exports.create = (env, params, done) => {
                         return done(err || `Could not find group ${params.group_id}`);
                     }
                     notification_params.group_name = res.group_info.name;
-                    return done(null, res.members);
+                    if (!recipients) {
+                        recipients = res.members;
+                    }
+                    return done(null, recipients);
                 });
             },
             (members, done) => {
