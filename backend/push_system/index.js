@@ -17,7 +17,7 @@ async function verifyUser(token) {
     return new Promise((resolve, reject) => {
         insider('/core/tokens', 'check', { token }, (err, data) => {
             console.log(err, data)
-            if (err) {
+            if (err || !data) {
                 return reject('USER_NOT_FOUND');
             }
             return resolve(data.user_id);
