@@ -31,6 +31,10 @@
 export default {
   created() {
     const user_token = this.$cookie.get("user_token");
+    if (!user_token) {
+      this.$router.replace("/login");
+      return;
+    }
     const redeem_code = this.$route.query.code;
     const params = { user_token, redeem_code };
     this.$http.callAPI("/core/groups", "join_group", params, (err, res) => {
