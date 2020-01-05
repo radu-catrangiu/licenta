@@ -380,6 +380,9 @@ function get_venues_list(self) {
 
 function set_time_intervals(self) {
     return new Promise(resolve => {
+        if (!self.current_group || !self.current_group.locations) {
+            return resolve(false);
+        }
         const username = self.user_info.username;
         const time_intervals = self.current_group.locations
             .find(e => e.username === username)

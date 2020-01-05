@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md">
         <img id="logo" src="../../../assets/logo.svg" alt>
-        <img id="logo" src="../../../assets/text-logo.svg" alt>
+        <img id="logo" src="../../../assets/meet-up-logo.png" alt>
       </div>
       <div class="col-md text-right">
         <div class="btn-group ml-4">
