@@ -39,6 +39,7 @@ export default {
     const params = { user_token, redeem_code };
     this.$http.callAPI("/core/groups", "join_group", params, (err, res) => {
       if (err) {
+        // eslint-disable-next-line
         console.log(err, res);
         return;
       }

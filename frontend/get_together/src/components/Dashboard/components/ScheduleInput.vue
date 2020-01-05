@@ -33,11 +33,13 @@ export default {
     };
   },
   watch: {
+    // eslint-disable-next-line
     value(new_value, old_value) {
       this.interval = new_value;
     }
   },
   created() {
+    // eslint-disable-next-line
     console.log("created!!", this.value);
     for (let v = 0; v <= minutes_in_day; v += 30) {
       this.possible_values.push(v);

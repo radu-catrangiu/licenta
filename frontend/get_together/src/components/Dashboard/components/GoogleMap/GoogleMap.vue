@@ -137,7 +137,7 @@ function set_venue_marker(self, map, venue_markers, venues) {
     const marker = new Google.maps.Marker({
       map: map,
       icon: {
-        url: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png"
+        url: "https://maps.google.com/mapfiles/ms/icons/purple-dot.png"
       }
     });
 
