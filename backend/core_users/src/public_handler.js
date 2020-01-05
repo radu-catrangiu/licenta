@@ -10,6 +10,28 @@ exports.create_account = (env, params, done) => {
 
     async.waterfall(
         [
+            function sanity_check(done) {
+                const error = {
+                    code: 800,
+                    error: 'FORBIDDEN',
+                    message: ''
+                };
+                if (typeof username !== 'string' || typeof password !== 'string') {
+                    return done(error);
+                }
+
+                if (username.length < 3) {
+                    error.message = 'Username must have at least 3 characters';
+                    return done(error);
+                }
+
+                if (password.length < 6) {
+                    error.message = 'Password must have at least 6 characters';
+                    return done(error);
+                }
+
+                return done();
+            },
             function check_if_user_exist(done) {
                 const query = { username };
 
@@ -125,6 +147,28 @@ exports.login = (env, params, done) => {
 
     async.waterfall(
         [
+            function sanity_check(done) {
+                const error = {
+                    code: 800,
+                    error: 'FORBIDDEN',
+                    message: ''
+                };
+                if (typeof username !== 'string' || typeof password !== 'string') {
+                    return done(error);
+                }
+
+                if (username.length < 3) {
+                    error.message = 'Username must have at least 3 characters';
+                    return done(error);
+                }
+
+                if (password.length < 6) {
+                    error.message = 'Password must have at least 6 characters';
+                    return done(error);
+                }
+
+                return done();
+            },
             function find_login(done) {
                 env.logins.find({ username }).toArray((err, res) => {
                     if (err || !res) {
