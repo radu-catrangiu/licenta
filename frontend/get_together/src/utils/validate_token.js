@@ -1,7 +1,7 @@
 export default async function validate_token(self, redirect) {
     const user_token = self.$cookie.get('user_token');
     if (!user_token) {
-        self.$cookie.remove('user_token');
+        self.$cookie.delete('user_token');
         self.$router.push('/login');
         return;
     }
@@ -10,7 +10,7 @@ export default async function validate_token(self, redirect) {
     return new Promise ((resolve) => {
         self.$http.callAPI('/core/tokens', 'validate', params, (err, res) => {
             if (err) {
-                self.$cookie.remove('user_token');
+                self.$cookie.delete('user_token');
                 self.$router.push('/login');
                 resolve();
                 return;
@@ -22,7 +22,7 @@ export default async function validate_token(self, redirect) {
                 }
                 resolve();
             } else {
-                self.$cookie.remove('user_token');
+                self.$cookie.delete('user_token');
                 self.$router.push('/login');
                 resolve();
             }
