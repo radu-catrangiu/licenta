@@ -46,9 +46,13 @@ export default {
   methods: {
     async notification_action(notification) {
       let group_id = notification.group_id;
-      this.$store.commit("set_all_venues", Array(7).fill([]));
-      await retrieve_group_details(this, group_id);
-      await get_venues_list(this, group_id);
+      let current_group_id = this.$store.getters.current_group_id;
+
+      if (group_id !== current_group_id) {
+        this.$store.commit("set_all_venues", Array(7).fill([]));
+        await retrieve_group_details(this, group_id);
+        await get_venues_list(this, group_id);
+      }
 
       await notification_seen(this, notification);
       await get_notifications_count(this);

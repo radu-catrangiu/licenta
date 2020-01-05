@@ -31,9 +31,12 @@ export default {
       this.$(id).modal("show");
     },
     async switch_group(group_id) {
-      this.$store.commit("set_all_venues", Array(7).fill([]));
-      await retrieve_group_details(this, group_id);
-      await get_venues_list(this, group_id);
+      let current_group_id = this.$store.getters.current_group_id;
+      if (group_id !== current_group_id) {
+        this.$store.commit("set_all_venues", Array(7).fill([]));
+        await retrieve_group_details(this, group_id);
+        await get_venues_list(this, group_id);
+      }
     }
   },
   computed: {

@@ -95,6 +95,9 @@ function unset_markers(markers) {
 }
 
 function set_markers(map, markers, locations) {
+  if (!locations || !(locations instanceof Array)) {
+    return;
+  }
   locations.forEach(location => {
     if (!location) {
       return;
@@ -124,6 +127,9 @@ function move_marker(marker, position) {
 }
 
 function set_venue_marker(self, map, venue_markers, venues) {
+  if (!venues || !(venues instanceof Array)) {
+    return;
+  }
   venues.forEach(venue => {
     if (!venue) {
       return;
