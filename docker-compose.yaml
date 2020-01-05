@@ -1,6 +1,21 @@
 version: "3.1"
 
 services:
+  nginx:
+    image: valian/docker-nginx-auto-ssl
+    restart: on-failure
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ssl_data:/etc/resty-auto-ssl
+    environment:
+      ALLOWED_DOMAINS: 'meet-up.go.ro'
+      SITES: 'meet-up.go.ro=frontend:80'
+    networks: 
+        - net
+
   frontend:
     build:
       context: ./frontend/get_together/
@@ -11,11 +26,11 @@ services:
     ports:
       - 8081:80
     environment:
-      NODE_ENV: "beta"
+      NODE_ENV: "production"
 
   mongo:
     image: mongo
-    command: --smallfiles
+    # command: --smallfiles
     restart: always
     container_name: database
     ports:
@@ -287,6 +302,7 @@ services:
 volumes:
   db_persistence:
   profile_pictures_storage:
+  ssl_data:
   
 
 networks: 
