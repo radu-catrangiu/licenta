@@ -46,7 +46,7 @@ Vue.use(VueGeolocation);
 Vue.use(VueRouter);
 Vue.use(VueCookie);
 Vue.use(new VueSocketIO({
-    debug: true,
+    debug: config.debug,
     connection: config.push_server,
     vuex: {
         store,

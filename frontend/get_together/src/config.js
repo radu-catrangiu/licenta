@@ -5,15 +5,20 @@ const API_URL = process.env.API_URL || document.location.hostname;
 
 if (process.env.NODE_ENV === "production") {
   config = {
-    $apiUrl: `http://${API_URL}:${API_PORT}`
+    debug: false,
+    $apiUrl: `${location.origin}`,
+    push_server: `${location.origin}`
   };
+  console.log = () => {}
 } else {
   config = {
-    $apiUrl: `http://${API_URL}:${API_PORT}`
+    debug: true,
+    $apiUrl: `http://${API_URL}:${API_PORT}`,
+    push_server: `http://${API_URL}:6969`
   };
 }
 
 config.comments_batch = 5;
-config.push_server = `http://${API_URL}:6969`;
+// config.push_server = `http://${API_URL}:6969`;
 
 export { config }
