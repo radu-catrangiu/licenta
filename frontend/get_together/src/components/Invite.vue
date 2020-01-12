@@ -1,30 +1,5 @@
 <template>
-  <div>
-    <!-- <div class="dropdown">
-      <a
-        class="btn btn-secondary dropdown-toggle"
-        href="#"
-        role="button"
-        id="dropdownMenuLink"
-        data-toggle="dropdown"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >Dropdown link</a>
-
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-        <div class="ml-3">
-          <a href="#">Test1</a>
-        </div>
-        <div class="ml-3">
-          <a href="#">test2</a>
-        </div>
-        <div class="ml-3">
-          <a href="#">TEST3</a>
-        </div>
-      </div>
-    </div> -->
-    Invite Page should never show. Something went wrong.
-  </div>
+  <div>Link is expired. You will be redirected!</div>
 </template>
 
 <script>
@@ -32,6 +7,10 @@ export default {
   created() {
     const user_token = this.$cookie.get("user_token");
     if (!user_token) {
+      this.$cookie.set(
+        "redirect_url",
+        encodeURIComponent(location.pathname + location.search)
+      );
       this.$router.replace("/login");
       return;
     }
@@ -41,6 +20,9 @@ export default {
       if (err) {
         // eslint-disable-next-line
         console.log(err, res);
+        setTimeout(() => {
+          this.$router.replace("/dashboard");
+        }, 2000);
         return;
       }
       this.$router.replace("/dashboard");

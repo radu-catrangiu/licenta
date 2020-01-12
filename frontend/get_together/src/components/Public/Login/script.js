@@ -27,7 +27,7 @@ export default {
         if (user_token) {
             this.$router.push('/dashboard');
         }
-        document.title = 'Log In | Get Together';
+        document.title = 'Log In | Meet Up';
         console.log(this.appConfig);
     }
 };
@@ -46,6 +46,9 @@ function loginAccount(self) {
             return;
         }
         self.$cookie.set('user_token', res.user_token);
-        self.$router.push('/dashboard');
+        const redirect_url = self.$cookie.get('redirect_url');
+        const url = redirect_url ? decodeURIComponent(redirect_url) : '/dashboard';
+        self.$cookie.delete('redirect_url');
+        self.$router.push(url);
     });
 }

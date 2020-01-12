@@ -124,7 +124,7 @@ export default {
         }
     },
     async mounted() {
-        document.title = 'Dashboard | Get Together';
+        document.title = 'Dashboard | Meet Up';
         this.$socket.open();
     },
     updated() {

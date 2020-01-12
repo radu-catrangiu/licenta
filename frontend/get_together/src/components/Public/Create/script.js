@@ -27,7 +27,7 @@ export default {
         } else {
             this.$refs.username.focus();
         }
-        document.title = 'Create Account | Get Together';
+        document.title = 'Create Account | Meet Up';
         console.log(this.appConfig);
     }
 };
@@ -45,6 +45,9 @@ async function createAccount(self) {
             return ;
         }
         self.$cookie.set('user_token', res.user_token);
-        self.$router.push("/dashboard");
+        const redirect_url = self.$cookie.get('redirect_url');
+        const url = redirect_url ? decodeURIComponent(redirect_url) : '/dashboard';
+        self.$cookie.delete('redirect_url');
+        self.$router.push(url);
     });
 }
